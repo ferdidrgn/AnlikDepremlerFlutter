@@ -1,5 +1,5 @@
 # ===================================================================
-# Deprem Model Sınıflarını R8/ProGuard Karartmasından Koru (KRİTİK!)
+# Deprem & Veri Modellerini Koruma
 # ===================================================================
 -keepattributes Signature
 -keepattributes *Annotation*
@@ -7,23 +7,43 @@
     @com.google.gson.annotations.SerializedName <fields>;
 }
 
-# Data modellerinizin paket isimlerini koru
--keep class com.ferdi.deprem.model.** { *; }
+# Veri modellerinizin paket isimlerini korur
 -keep class com.ferdidrgn.anlikdepremler.model.** { *; }
 -keep class com.ferdidrgn.anlikdepremler.data.** { *; }
 
-# Retrofit, OkHttp & Gson
+# ===================================================================
+# Network (Retrofit, OkHttp, Gson)
+# ===================================================================
 -keep class retrofit2.** { *; }
 -keep interface retrofit2.** { *; }
 -keep class okhttp3.** { *; }
 -dontwarn okhttp3.**
 -dontwarn retrofit2.**
 
-# Firebase & Google Play Services
--keep class com.google.firebase.** { *; }
--keep class com.google.android.gms.** { *; }
+# ===================================================================
+# Jetpack Compose & Navigation
+# ===================================================================
+-keep class androidx.compose.** { *; }
+-dontwarn androidx.compose.**
 
-# Hilt / Dagger
+# ===================================================================
+# Dagger Hilt
+# ===================================================================
 -keep class * extends androidx.lifecycle.ViewModel
 -keep class *_Factory { *; }
 -keep class *_MembersInjector { *; }
+-keep class **..*Dagger* { *; }
+-keep class **..*Hilt* { *; }
+
+# ===================================================================
+# Firebase, Google Play & AdMob
+# ===================================================================
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
+
+# ===================================================================
+# Coroutines & DataStore
+# ===================================================================
+-keepclassmembers class kotlinx.coroutines.** { *; }
+-dontwarn kotlinx.coroutines.**
