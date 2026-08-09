@@ -223,7 +223,11 @@ fun EarthquakeDetailScreen(
                             containerColor = if (isWhistleBlowing) Color.Black else MaterialTheme.colorScheme.error
                         )
                     ) {
-                        Text(if (isWhistleBlowing) stringResource(R.string.whistle_stop) else stringResource(R.string.whistle_start))
+                        Text(
+                            if (isWhistleBlowing) stringResource(R.string.whistle_stop) else stringResource(
+                                R.string.whistle_start
+                            )
+                        )
                     }
                 }
             }
@@ -273,6 +277,91 @@ private fun DetailInfoTile(
     }
 }
 
+@Composable
+fun SeismicImpactCard(
+    magnitude: Double,
+    depth: Double,
+    feltCount: Int,
+    onFeltClicked: () -> Unit
+) {
+    var hasUserFelt by remember { mutableStateOf(false) }
+    var currentFeltCount by remember { mutableStateOf(feltCount) }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
+                alpha = 0.4f
+            )
+        )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text(
+                        text = "Sarsıntı Topluluk Bildirimi",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "$currentFeltCount Kişi Hissettiğini Bildirdi",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
+
+                Button(
+                    onClick = {
+                        if (!hasUserFelt) {
+                            hasUserFelt = true
+                            currentFeltCount++
+                            onFeltClicked()
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (hasUserFelt) Color(0xFF10B981) else MaterialTheme.colorScheme.primary
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(if (hasUserFelt) "✓ Hissettim" else "Ben de Hissettim!")
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // MMI Şiddet Derecesi Tahmini
+            val mmiText = when {
+                magnitude >= 6.0 -> "Şiddetli (Yıkıcı Olabilir)"
+                magnitude >= 4.5 -> "Orta (Binalar Sallandı, Eşyalar Düştü)"
+                magnitude >= 3.0 -> "Hafif (İç Mekanda Hissedildi)"
+                else -> "Zayıf (Yalnızca Hassas Hissedildi)"
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Tahmini MMI Şiddeti: ",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = mmiText,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
+    }
+}
+
 private fun shareEarthquakeDetail(context: Context, earthquake: Earthquake) {
     val text = context.getString(
         R.string.share_template,
@@ -289,5 +378,10 @@ private fun shareEarthquakeDetail(context: Context, earthquake: Earthquake) {
         putExtra(Intent.EXTRA_TEXT, text)
         type = "text/plain"
     }
-    context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_earthquake_info)))
+    context.startActivity(
+        Intent.createChooser(
+            intent,
+            context.getString(R.string.share_earthquake_info)
+        )
+    )
 }

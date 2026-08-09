@@ -4,12 +4,13 @@ enum class AppLanguage(val code: String, val displayName: String, val flag: Stri
     TURKISH("tr", "Türkçe", "🇹🇷"),
     ENGLISH("en", "English", "🇬🇧"),
     GERMAN("de", "Deutsch", "🇩🇪"),
+    SPANISH("es", "Español", "🇪🇸"),
     ITALIAN("it", "Italiano", "🇮🇹"),
     RUSSIAN("ru", "Русский", "🇷🇺"),
     UKRAINIAN("uk", "Українська", "🇺🇦"),
     GREEK("el", "Ελληνικά", "🇬🇷"),
-    KYRGYZ("ky", "Kırgızça / Кыргызча", "🇰🇬"),
-    UZBEK("uz", "O'zbekcha", "🇺🇿"),
+    KYRGYZ("ky", "Кыргызча", "🇰🇬"),
+    UZBEK("uz", "Oʻzbekcha", "🇺🇿"),
     ARABIC("ar", "العربية", "🇸🇦");
 
     companion object {

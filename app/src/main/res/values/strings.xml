@@ -168,4 +168,17 @@
     <string name="depth_label">Derinlik: %1$.1f km</string>
 
     <string name="source_emsc">EMSC Avrupa 🇪🇺</string>
+
+    <!-- Resmi Rehber Bağlantıları -->
+    <string name="guide_afad_before_title">AFAD Deprem Öncesi Hazırlık Rehberi</string>
+    <string name="guide_afad_before_desc">Deprem öncesinde alınması gereken resmi tedbirler ve yapısal önlemler.</string>
+    <string name="guide_akut_bag_title">AKUT Deprem Çantası Hazırlama</string>
+    <string name="guide_akut_bag_desc">Acil durum çantasında bulunması gereken malzeme ve gıda standartları.</string>
+    <string name="guide_kizilay_first_aid_title">Kızılay Afet İlkyardım Taktikleri</string>
+    <string name="guide_kizilay_first_aid_desc">Sarsıntı anında ve sonrasında hayat kurtaran ilkyardım adımları.</string>
+
+    <!-- Acil Durum SMS -->
+    <string name="emergency_safe_btn">İyiyim, Güvendeyim 👍</string>
+    <string name="emergency_help_btn">Acil Yardıma İhtiyacım Var 🚨</string>
+    <string name="official_sources_title">🏛️ Resmi Kurum Referansları</string>
 </resources>

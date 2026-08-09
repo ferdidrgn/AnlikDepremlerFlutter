@@ -33,7 +33,10 @@ android {
         versionName = "1.30"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        resourceConfigurations += listOf("en", "tr")
+        vectorDrawables { useSupportLibrary = true }
+        resourceConfigurations.addAll(
+            listOf("tr", "en", "de", "es", "it", "ru", "uk", "el", "ky", "uz", "ar")
+        )
 
         manifestPlaceholders["API_KEY_ADMOB"] = secret("API_KEY_ADMOB")
         manifestPlaceholders["API_KEY_LOCATION"] = secret("API_KEY_LOCATION")
