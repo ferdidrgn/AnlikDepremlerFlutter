@@ -15,11 +15,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
+import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,24 +30,36 @@ fun LegalDocumentScreen(
     documentType: String,
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
     var htmlContent by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(true) }
 
-    // API 24 Uyumlu String Karşılaştırması
     val isPrivacy = documentType.equals("privacy_policy", ignoreCase = true)
     val title = if (isPrivacy) "Gizlilik Politikası" else "Kullanım Koşulları"
 
     LaunchedEffect(documentType) {
-        // Doğrudan Java/Kotlin standart Firestore instance kullanımı (Import hatası yapmaz)
-        FirebaseFirestore.getInstance()
-            .collection("AppTools")
-            .orderBy(documentType)
-            .addSnapshotListener { snapshot, error ->
-                isLoading = false
-                if (error == null && snapshot != null && !snapshot.isEmpty) {
-                    htmlContent = snapshot.documents.firstOrNull()?.getString(documentType) ?: ""
-                }
+        try {
+            // FirebaseApp ilklendirilmemişse garanti olsun diye burada da kontrol ediyoruz
+            if (FirebaseApp.getApps(context).isEmpty()) {
+                FirebaseApp.initializeApp(context)
             }
+
+            FirebaseFirestore.getInstance()
+                .collection("AppTools")
+                .orderBy(documentType)
+                .addSnapshotListener { snapshot, error ->
+                    isLoading = false
+                    if (error == null && snapshot != null && !snapshot.isEmpty) {
+                        htmlContent =
+                            snapshot.documents.firstOrNull()?.getString(documentType) ?: ""
+                    }
+                }
+        } catch (e: Exception) {
+            isLoading = false
+            htmlContent =
+                "<p>Metin yüklenirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin.</p>"
+            e.printStackTrace()
+        }
     }
 
     Scaffold(
@@ -125,8 +139,8 @@ fun LegalDocumentScreen(
                         val textColor = MaterialTheme.colorScheme.onSurface.toArgb()
 
                         AndroidView(
-                            factory = { context ->
-                                TextView(context).apply {
+                            factory = { ctx ->
+                                TextView(ctx).apply {
                                     setTextColor(textColor)
                                     textSize = 14f
                                     setLineSpacing(6f, 1.1f)

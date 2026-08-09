@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.application)
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.gms.google-services")
 
     // KSP & Hilt Pluginleri
     alias(libs.plugins.ksp)
