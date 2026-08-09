@@ -167,4 +167,17 @@
     <string name="search_map_placeholder">Buscar ciudad/región en el mapa...</string>
     <string name="depth_label">Profundidad: %1$.1f km</string>
     <string name="source_emsc">EMSC Europa 🇪🇺</string>
+
+    <!-- Guías Oficiales -->
+    <string name="guide_afad_before_title">Guía de Preparación AFAD</string>
+    <string name="guide_afad_before_desc">Medidas oficiales y precauciones estructurales antes de un terremoto.</string>
+    <string name="guide_akut_bag_title">Preparación Mochila de Emergencia AKUT</string>
+    <string name="guide_akut_bag_desc">Estándares de materiales y alimentos para la mochila de emergencia.</string>
+    <string name="guide_kizilay_first_aid_title">Primeros Auxilios de la Media Luna Roja</string>
+    <string name="guide_kizilay_first_aid_desc">Pasos de primeros auxilios vitales durante y después del sismo.</string>
+
+    <!-- SMS de Emergencia -->
+    <string name="emergency_safe_btn">Estoy bien, estoy a salvo 👍</string>
+    <string name="emergency_help_btn">Necesito ayuda de emergencia 🚨</string>
+    <string name="official_sources_title">🏛️ Referencias Oficiales</string>
 </resources>

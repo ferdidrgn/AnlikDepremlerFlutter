@@ -11,7 +11,10 @@ enum class AppLanguage(val code: String, val displayName: String, val flag: Stri
     GREEK("el", "Ελληνικά", "🇬🇷"),
     KYRGYZ("ky", "Кыргызча", "🇰🇬"),
     UZBEK("uz", "Oʻzbekcha", "🇺🇿"),
-    ARABIC("ar", "العربية", "🇸🇦");
+    ARABIC("ar", "العربية", "🇸🇦"),
+    KOREAN("ko", "한국어", "🇰🇷"),
+    JAPANESE("ja", "日本語", "🇯🇵"),
+    CHINESE("zh", "中文", "🇨🇳");
 
     companion object {
         fun fromCode(code: String): AppLanguage {

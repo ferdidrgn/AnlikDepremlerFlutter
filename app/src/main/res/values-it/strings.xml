@@ -167,4 +167,17 @@
     <string name="search_map_placeholder">Cerca Città/Regione sulla Mappa...</string>
     <string name="depth_label">Profondità: %1$.1f km</string>
     <string name="source_emsc">EMSC Europa 🇪🇺</string>
+
+    <!-- Guide Ufficiali -->
+    <string name="guide_afad_before_title">Guida Pre-Terremoto AFAD</string>
+    <string name="guide_afad_before_desc">Misure ufficiali e precauzioni strutturali prima di un terremoto.</string>
+    <string name="guide_akut_bag_title">Preparazione Kit Emergenza AKUT</string>
+    <string name="guide_akut_bag_desc">Standard di materiali e cibo necessari per lo zaino di emergenza.</string>
+    <string name="guide_kizilay_first_aid_title">Primo Soccorso Mezzaluna Rossa</string>
+    <string name="guide_kizilay_first_aid_desc">Passaggi salvavita di primo soccorso durante e dopo le scosse.</string>
+
+    <!-- SMS di Emergenza -->
+    <string name="emergency_safe_btn">Sto bene, sono al sicuro 👍</string>
+    <string name="emergency_help_btn">Ho bisogno di aiuto urgente 🚨</string>
+    <string name="official_sources_title">🏛️ Riferimenti Istituzionali Ufficiali</string>
 </resources>

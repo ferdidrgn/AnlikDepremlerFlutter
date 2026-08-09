@@ -1,7 +1,6 @@
 package com.ferdidrgn.anlikdepremler
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -12,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -21,7 +19,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ferdi.deprem.ui.screens.EarthquakeListScreen
-import com.ferdidrgn.anlikdepremler.core.language.LocaleHelper
 import com.ferdidrgn.anlikdepremler.core.navigation.DeepLinkHelper
 import com.ferdidrgn.anlikdepremler.navigation.Screen
 import com.ferdidrgn.anlikdepremler.ui.components.CustomBottomNavigationBar
@@ -33,54 +30,45 @@ import com.ferdidrgn.anlikdepremler.ui.screen.MainViewModel
 import com.ferdidrgn.anlikdepremler.ui.screen.MapScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.OnboardingScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.SettingsScreen
-import com.ferdidrgn.anlikdepremler.ui.screen.SettingsViewModel
 import com.ferdidrgn.anlikdepremler.ui.screen.SplashScreen
 import com.ferdidrgn.anlikdepremler.ui.theme.DepremTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+import androidx.appcompat.app.AppCompatActivity
 
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContent {
-            val settingsViewModel: SettingsViewModel = hiltViewModel()
-            val currentLanguage by settingsViewModel.currentLanguage.collectAsState()
+            val mainViewModel: MainViewModel = hiltViewModel()
+            val uiState by mainViewModel.uiState.collectAsState()
+            val isOnboardingCompleted by mainViewModel.isOnboardingCompleted.collectAsState()
 
-            // 🌐 DİL DEĞİŞİKLİĞİNDE DİNAMİK RE-COMPOSITION BAĞLAMI
-            val context = LocalContext.current
-            val localizedContext = remember(currentLanguage) {
-                LocaleHelper.applyLanguage(context, currentLanguage.code)
-            }
+            var isSplashActive by remember { mutableStateOf(true) }
 
-            CompositionLocalProvider(LocalContext provides localizedContext) {
-                val mainViewModel: MainViewModel = hiltViewModel()
-                val uiState by mainViewModel.uiState.collectAsState()
-                val isOnboardingCompleted by mainViewModel.isOnboardingCompleted.collectAsState()
+            DepremTheme(themeMode = uiState.currentTheme) {
+                val systemUiController = rememberSystemUiController()
+                val useDarkIcons = !isSystemInDarkTheme()
 
-                var isSplashActive by remember { mutableStateOf(true) }
+                DisposableEffect(systemUiController, useDarkIcons) {
+                    systemUiController.setStatusBarColor(
+                        color = Color.Transparent,
+                        darkIcons = useDarkIcons
+                    )
+                    onDispose {}
+                }
 
-                DepremTheme(themeMode = uiState.currentTheme) {
-                    val systemUiController = rememberSystemUiController()
-                    val useDarkIcons = !isSystemInDarkTheme()
-
-                    DisposableEffect(systemUiController, useDarkIcons) {
-                        systemUiController.setStatusBarColor(
-                            color = Color.Transparent,
-                            darkIcons = useDarkIcons
-                        )
-                        onDispose {}
-                    }
-
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        if (isSplashActive)
-                            SplashScreen(onSplashFinished = { isSplashActive = false })
-                        else if (!isOnboardingCompleted)
-                            OnboardingScreen(onFinishOnboarding = { mainViewModel.completeOnboarding() })
-                        else MainAppScreen(mainViewModel = mainViewModel)
+                Box(modifier = Modifier.fillMaxSize()) {
+                    if (isSplashActive) {
+                        SplashScreen(onSplashFinished = { isSplashActive = false })
+                    } else if (!isOnboardingCompleted) {
+                        OnboardingScreen(onFinishOnboarding = { mainViewModel.completeOnboarding() })
+                    } else {
+                        MainAppScreen(mainViewModel = mainViewModel)
                     }
                 }
             }
@@ -93,7 +81,6 @@ fun MainAppScreen(mainViewModel: MainViewModel) {
     val navController = rememberNavController()
     val uiState by mainViewModel.uiState.collectAsState()
 
-    // 🌐 İnternet durumunu ViewModel'den canlı dinle
     val isConnected by mainViewModel.isConnected.collectAsState()
 
     Scaffold(

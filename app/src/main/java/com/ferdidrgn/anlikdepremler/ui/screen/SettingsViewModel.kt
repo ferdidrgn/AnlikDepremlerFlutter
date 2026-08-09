@@ -48,13 +48,12 @@ class SettingsViewModel @Inject constructor(
     // 📌 Dil Seçimi (Arayüzü Anında Yeniler)
     fun onLanguageSelected(context: Context, language: AppLanguage) {
         viewModelScope.launch {
+            // 1. Seçimi kaydet
             preferencesManager.saveSelectedLanguage(language.code)
-            LocaleHelper.applyLanguage(context, language.code)
 
-            // Activity'yi tazeleyerek tüm String kaynaklarını yeni dilden oku
-            (context as? Activity)?.let { activity ->
-                activity.recreate()
-            }
+            // 2. Uygulama dilini sistem seviyesinde değiştir (AppCompatActivity olduğu için tık diye çalışacak)
+            val appLocale = androidx.core.os.LocaleListCompat.forLanguageTags(language.code)
+            androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(appLocale)
         }
     }
 

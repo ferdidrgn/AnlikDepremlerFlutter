@@ -167,4 +167,17 @@
     <string name="search_map_placeholder">Stadt/Region auf der Karte suchen...</string>
     <string name="depth_label">Tiefe: %1$.1f km</string>
     <string name="source_emsc">EMSC Europa 🇪🇺</string>
+
+    <!-- Offizielle Leitfäden -->
+    <string name="guide_afad_before_title">AFAD Erdbebenvorsorge-Leitfaden</string>
+    <string name="guide_afad_before_desc">Offizielle Maßnahmen und bauliche Vorkehrungen vor einem Erdbeben.</string>
+    <string name="guide_akut_bag_title">AKUT Notfallrucksack-Vorbereitung</string>
+    <string name="guide_akut_bag_desc">Erforderliche Notfallausrüstung und Lebensmittelstandards.</string>
+    <string name="guide_kizilay_first_aid_title">Roter Halbmond Erste-Hilfe-Taktiken</string>
+    <string name="guide_kizilay_first_aid_desc">Lebensrettende Erste-Hilfe-Schritte während und nach Erdbeben.</string>
+
+    <!-- Notfall-SMS -->
+    <string name="emergency_safe_btn">Mir geht es gut, ich bin sicher 👍</string>
+    <string name="emergency_help_btn">Ich brauche dringend Hilfe 🚨</string>
+    <string name="official_sources_title">🏛️ Offizielle Referenzen</string>
 </resources>

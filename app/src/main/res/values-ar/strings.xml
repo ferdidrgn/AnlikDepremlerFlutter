@@ -167,4 +167,17 @@
     <string name="search_map_placeholder">ابحث عن مدينة/منطقة على الخريطة...</string>
     <string name="depth_label">العمق: %1$.1f كم</string>
     <string name="source_emsc">EMSC أوروبا 🇪🇺</string>
+
+    <!-- أدلة رسمية -->
+    <string name="guide_afad_before_title">دليل AFAD للاستعداد قبل الزلازل</string>
+    <string name="guide_afad_before_desc">الإجراءات الرسمية والاحتياطات الهيكلية الواجب اتخاذها قبل الزلزال.</string>
+    <string name="guide_akut_bag_title">إعداد حقيبة الطوارئ من AKUT</string>
+    <string name="guide_akut_bag_desc">معايير المواد والأغذية المطلوبة في حقيبة الطوارئ.</string>
+    <string name="guide_kizilay_first_aid_title">إسعافات الهلال الأحمر في الكوارث</string>
+    <string name="guide_kizilay_first_aid_desc">خطوات الإسعافات الأولية المنقذة للحياة أثناء الهزات وبعدها.</string>
+
+    <!-- رسائل طوارئ SMS -->
+    <string name="emergency_safe_btn">أنا بخير، أنا في أمان 👍</string>
+    <string name="emergency_help_btn">أحتاج إلى مساعدة عاجلة 🚨</string>
+    <string name="official_sources_title">🏛️ مراجع المؤسسات الرسمية</string>
 </resources>

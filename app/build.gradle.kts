@@ -36,7 +36,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
         resourceConfigurations.addAll(
-            listOf("tr", "en", "de", "es", "it", "ru", "uk", "el", "ky", "uz", "ar")
+            listOf("tr", "en", "de", "es", "it", "ru", "uk", "el", "ky", "uz", "ar", "ko", "ja", "zh")
         )
 
         manifestPlaceholders["API_KEY_ADMOB"] = secret("API_KEY_ADMOB")

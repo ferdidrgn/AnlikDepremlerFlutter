@@ -166,4 +166,18 @@
     <!-- Xarita -->
     <string name="search_map_placeholder">Xaritalardan Shahar/Hudud Qidirish...</string>
     <string name="depth_label">Chuqurlik: %1$.1f km</string>
-    <string name="source_emsc">EMSC Yevropa 🇪🇺</string></resources>
+    <string name="source_emsc">EMSC Yevropa 🇪🇺</string>
+
+    <!-- Rasmiy Qo‘llanmalar -->
+    <string name="guide_afad_before_title">AFAD Zilzilaga tayyorgarlik qo‘llanmasi</string>
+    <string name="guide_afad_before_desc">Zilziladan oldin ko‘rilishi kerak bo‘lgan rasmiy choralar.</string>
+    <string name="guide_akut_bag_title">AKUT Favqulodda xaltani tayyorlash</string>
+    <string name="guide_akut_bag_desc">Favqulodda vaziyat xaltasida bo‘lishi kerak bo‘lgan buyumlar va oziq-ovqatlar.</string>
+    <string name="guide_kizilay_first_aid_title">Qizil Yarim Oy Birinchi yordam qoidalari</string>
+    <string name="guide_kizilay_first_aid_desc">Siltanish paytida va undan keyin hayotni saqlab qoluvchi qadamlar.</string>
+
+    <!-- Favqulodda SMS -->
+    <string name="emergency_safe_btn">Men yaxshiman, xavfsizdaman 👍</string>
+    <string name="emergency_help_btn">Menga shoshilinch yordam kerak 🚨</string>
+    <string name="official_sources_title">🏛️ Rasmiy tashkilot manbalari</string>
+</resources>

@@ -167,4 +167,17 @@
     <string name="search_map_placeholder">Αναζήτηση Πόλης/Περιοχής στο Χάρτη...</string>
     <string name="depth_label">Βάθος: %1$.1f km</string>
     <string name="source_emsc">EMSC Ευρώπη 🇪🇺</string>
+
+    <!-- Επίσημοι Οδηγοί -->
+    <string name="guide_afad_before_title">Οδηγός Προετοιμασίας Σεισμού AFAD</string>
+    <string name="guide_afad_before_desc">Επίσημα μέτρα και δομικές προφυλάξεις πριν από έναν σεισμό.</string>
+    <string name="guide_akut_bag_title">Προετοιμασία Τσάντας Εκτάκτου Ανάγκης AKUT</string>
+    <string name="guide_akut_bag_desc">Πρότυπα υλικών και τροφίμων για την τσάντα έκτακτης ανάγκης.</string>
+    <string name="guide_kizilay_first_aid_title">Πρώτες Βοήθειες Ερυθράς Ημισελήνου</string>
+    <string name="guide_kizilay_first_aid_desc">Βήματα πρώτων βοηθειών κατά τη διάρκεια και μετά τις δονήσεις.</string>
+
+    <!-- SMS Έκτακτης Ανάγκης -->
+    <string name="emergency_safe_btn">Είμαι καλά, είμαι ασφαλής 👍</string>
+    <string name="emergency_help_btn">Χρειάζομαι επείγουσα βοήθεια 🚨</string>
+    <string name="official_sources_title">🏛️ Επίσημες Πηγές</string>
 </resources>

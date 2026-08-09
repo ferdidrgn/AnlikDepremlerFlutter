@@ -167,4 +167,17 @@
     <string name="search_map_placeholder">Search City/Region on Map...</string>
     <string name="depth_label">Depth: %1$.1f km</string>
     <string name="source_emsc">EMSC Europe 🇪🇺</string>
+
+    <!-- Official Guide Links -->
+    <string name="guide_afad_before_title">AFAD Pre-Earthquake Preparedness Guide</string>
+    <string name="guide_afad_before_desc">Official measures and structural precautions to take before an earthquake.</string>
+    <string name="guide_akut_bag_title">AKUT Emergency Bag Preparation</string>
+    <string name="guide_akut_bag_desc">Material and food standards required for an emergency bag.</string>
+    <string name="guide_kizilay_first_aid_title">Red Crescent Disaster First Aid Tactics</string>
+    <string name="guide_kizilay_first_aid_desc">Life-saving first aid steps during and after tremors.</string>
+
+    <!-- Emergency SMS -->
+    <string name="emergency_safe_btn">I\'m Fine, I\'m Safe 👍</string>
+    <string name="emergency_help_btn">I Need Emergency Help 🚨</string>
+    <string name="official_sources_title">🏛️ Official Institution References</string>
 </resources>

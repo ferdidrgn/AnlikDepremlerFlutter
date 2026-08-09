@@ -168,4 +168,17 @@
     <string name="search_map_placeholder">Картадан Шаар/Аймак Издөө...</string>
     <string name="depth_label">Тереңдик: %1$.1f км</string>
     <string name="source_emsc">EMSC Европа 🇪🇺</string>
+
+    <!-- Расмий Колдонмолор -->
+    <string name="guide_afad_before_title">AFAD Жер титирөөгө даярдануу колдонмосу</string>
+    <string name="guide_afad_before_desc">Жер титирөөгө чейин көрүлө турган расмий чаралар жана эрежелер.</string>
+    <string name="guide_akut_bag_title">AKUT Өзгөчө кырдаал баштыгын даярдоо</string>
+    <string name="guide_akut_bag_desc">Шашылыш баштыкта болушу керек болгон буюмдар жана азыктар.</string>
+    <string name="guide_kizilay_first_aid_title">Кызыл Жарым Ай биринчи жардам эрежелери</string>
+    <string name="guide_kizilay_first_aid_desc">Силкинүү учурунда жана андан кийин өмүрдү сактап калуучу кадамдар.</string>
+
+    <!-- Шашылыш СМС -->
+    <string name="emergency_safe_btn">Мен жакшымын, коопсуз жердемин 👍</string>
+    <string name="emergency_help_btn">Мага шашылыш жардам керек 🚨</string>
+    <string name="official_sources_title">🏛️ Расмий мекеме шилтемелери</string>
 </resources>

@@ -167,4 +167,18 @@
     <string name="search_map_placeholder">Пошук міста/регіону на карті...</string>
     <string name="depth_label">Глибина: %1$.1f км</string>
     <string name="source_emsc">EMSC Європа 🇪🇺</string>
+
+
+    <!-- Офіційні Посібники -->
+    <string name="guide_afad_before_title">Посібник AFAD із підготовки до землетрусу</string>
+    <string name="guide_afad_before_desc">Офіційні заходи та конструктивні застереження перед землетрусом.</string>
+    <string name="guide_akut_bag_title">Збір тривожної валізи AKUT</string>
+    <string name="guide_akut_bag_desc">Стандарти матеріалів та продуктів харчування для екстреного рюкзака.</string>
+    <string name="guide_kizilay_first_aid_title">Перша допомога від Червоного Півмісяця</string>
+    <string name="guide_kizilay_first_aid_desc">Кроки першої допомоги під час та після поштовхів.</string>
+
+    <!-- Екстрене SMS -->
+    <string name="emergency_safe_btn">Я в порядку, я в безпеці 👍</string>
+    <string name="emergency_help_btn">Мені потрібна термінова допомога 🚨</string>
+    <string name="official_sources_title">🏛️ Офіційні джерела</string>
 </resources>
