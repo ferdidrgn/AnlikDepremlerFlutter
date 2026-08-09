@@ -32,8 +32,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.billingclient.api.*
 import com.ferdidrgn.anlikdepremler.R
 import com.ferdidrgn.anlikdepremler.core.language.AppLanguage
-import com.ferdidrgn.anlikdepremler.core.util.ReviewHelper
 import com.ferdidrgn.anlikdepremler.ui.components.NativeAdCard
+import com.ferdidrgn.anlikdepremler.ui.theme.AppThemeMode
+import com.google.android.play.core.review.ReviewManagerFactory
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -42,9 +43,13 @@ fun SettingsScreen(
     onOpenLegalDocument: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
-    val currentLang by settingsViewModel.currentLanguage.collectAsState(initial = AppLanguage.TURKISH)
+    val activity = context as? Activity
+
+    val currentLang by settingsViewModel.currentLanguage.collectAsState()
+    val currentTheme by settingsViewModel.currentTheme.collectAsState()
 
     var showLanguageDialog by remember { mutableStateOf(false) }
+    var showThemeDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         settingsViewModel.eventFlow.collectLatest { event ->
@@ -52,7 +57,7 @@ fun SettingsScreen(
                 is SettingsEvent.SendEmail -> sendEmailIntent(context, event.email)
                 is SettingsEvent.OpenNotificationSettings -> openNotificationSettings(context)
                 is SettingsEvent.OpenLocationSettings -> openLocationSettings(context)
-                is SettingsEvent.RequestReview -> ReviewHelper.launchInAppReview(context)
+                is SettingsEvent.RequestReview -> launchSmartAppReview(context, activity)
                 is SettingsEvent.ShareApp -> shareApp(context)
                 is SettingsEvent.NavigateToWeb -> openWebPage(context, event.url)
                 is SettingsEvent.BuyCoffee -> launchCoffeeDonationFlow(context, event.productId)
@@ -76,8 +81,8 @@ fun SettingsScreen(
             modifier = Modifier.padding(bottom = 20.dp)
         )
 
-        // 1. TERCİHLER
-        SettingsCategoryTitle("TERCİHLER")
+        // 1. TERCİHLER (DİL & 3 TEMA MODU)
+        SettingsCategoryTitle("TERCİHLER & GÖRÜNÜM")
         SettingsCardContainer {
             ModernSettingsTile(
                 icon = Icons.Default.Language,
@@ -85,6 +90,19 @@ fun SettingsScreen(
                 title = stringResource(R.string.select_language),
                 valueText = "${currentLang.flag} ${currentLang.displayName}",
                 onClick = { showLanguageDialog = true }
+            )
+            DividerLine()
+            // 🎨 3 Tema Seçeneği
+            ModernSettingsTile(
+                icon = Icons.Default.Palette,
+                iconBgColor = Color(0xFFE91E63),
+                title = "Uygulama Teması",
+                valueText = when (currentTheme) {
+                    AppThemeMode.CREAM_LIGHT -> "Krem Tema 🍦"
+                    AppThemeMode.SYSTEM_DYNAMIC -> "Sistem Rengi 📱"
+                    AppThemeMode.DARK_NIGHT -> "Koyu Gece 🌙"
+                },
+                onClick = { showThemeDialog = true }
             )
         }
 
@@ -172,10 +190,11 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 💰 EN YÜKSEK KAZANÇLI KART İÇİ NATIVE REKLAM (KULLANICIYI BOĞMAZ)
+        // 💰 KART İÇİ NATIVE REKLAM
         NativeAdCard()
     }
 
+    // 🌐 DİL SEÇİM POPUP
     if (showLanguageDialog) {
         AlertDialog(
             onDismissRequest = { showLanguageDialog = false },
@@ -195,7 +214,7 @@ fun SettingsScreen(
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
                                 .clickable {
-                                    settingsViewModel.onLanguageSelected(language)
+                                    settingsViewModel.onLanguageSelected(context, language)
                                     showLanguageDialog = false
                                 }
                                 .padding(12.dp),
@@ -222,6 +241,56 @@ fun SettingsScreen(
             confirmButton = {},
             dismissButton = {
                 TextButton(onClick = { showLanguageDialog = false }) { Text("İptal") }
+            }
+        )
+    }
+
+    // 🎨 TEMA SEÇİM POPUP (CREAM, SYSTEM, DARK NIGHT)
+    if (showThemeDialog) {
+        AlertDialog(
+            onDismissRequest = { showThemeDialog = false },
+            title = { Text(text = "Uygulama Teması Seçin", fontWeight = FontWeight.Bold) },
+            text = {
+                Column {
+                    val themes = listOf(
+                        AppThemeMode.CREAM_LIGHT to "Krem Tema 🍦",
+                        AppThemeMode.SYSTEM_DYNAMIC to "Sistem Rengi 📱",
+                        AppThemeMode.DARK_NIGHT to "Koyu Gece 🌙"
+                    )
+
+                    themes.forEach { (mode, label) ->
+                        val isSelected = mode == currentTheme
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
+                                .clickable {
+                                    settingsViewModel.onThemeSelected(mode)
+                                    showThemeDialog = false
+                                }
+                                .padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                label,
+                                modifier = Modifier.weight(1f),
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            )
+                            if (isSelected) {
+                                Icon(
+                                    Icons.Default.Check,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { showThemeDialog = false }) { Text("İptal") }
             }
         )
     }
@@ -327,6 +396,44 @@ private fun DividerLine() {
         color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
         modifier = Modifier.padding(start = 68.dp)
     )
+}
+
+private fun launchSmartAppReview(context: Context, activity: Activity?) {
+    if (activity == null) return
+    val manager = ReviewManagerFactory.create(context)
+    val request = manager.requestReviewFlow()
+
+    request.addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            val reviewInfo = task.result
+            val flow = manager.launchReviewFlow(activity, reviewInfo)
+            flow.addOnCompleteListener {
+                Toast.makeText(context, "Değerlendirmeniz için teşekkürler!", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        } else {
+            openPlayStore(context)
+        }
+    }
+}
+
+private fun openPlayStore(context: Context) {
+    val appPackageName = context.packageName
+    try {
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("market://details?id=$appPackageName")
+            )
+        )
+    } catch (e: Exception) {
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
+            )
+        )
+    }
 }
 
 private fun sendEmailIntent(context: Context, email: String) {

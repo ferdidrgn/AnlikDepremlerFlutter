@@ -1,16 +1,18 @@
 package com.ferdidrgn.anlikdepremler.ui.screen
 
+import android.app.Activity
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ferdidrgn.anlikdepremler.core.datastore.PreferencesManager
 import com.ferdidrgn.anlikdepremler.core.language.AppLanguage
 import com.ferdidrgn.anlikdepremler.core.util.LocaleUtils
+import com.ferdidrgn.anlikdepremler.ui.theme.AppThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// 📌 UI Event Yapısı
 sealed interface SettingsEvent {
     data class SendEmail(val email: String) : SettingsEvent
     object OpenNotificationSettings : SettingsEvent
@@ -26,23 +28,35 @@ class SettingsViewModel @Inject constructor(
     private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
-    val currentLanguage = preferencesManager.selectedLanguage.map {
+    val currentLanguage: StateFlow<AppLanguage> = preferencesManager.selectedLanguage.map {
         AppLanguage.fromCode(it)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AppLanguage.TURKISH)
+
+    val currentTheme: StateFlow<AppThemeMode> =
+        preferencesManager.selectedThemeMode.map { modeName ->
+            try {
+                AppThemeMode.valueOf(modeName)
+            } catch (e: Exception) {
+                AppThemeMode.CREAM_LIGHT
+            }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AppThemeMode.CREAM_LIGHT)
 
     private val _eventFlow = MutableSharedFlow<SettingsEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    fun onLanguageSelected(language: AppLanguage) {
+    // 📌 Dil Seçimi (Arayüzü Anında Yeniler)
+    fun onLanguageSelected(context: Context, language: AppLanguage) {
         viewModelScope.launch {
             LocaleUtils.setAppLanguage(language.code)
             preferencesManager.saveSelectedLanguage(language.code)
+            (context as? Activity)?.recreate()
         }
     }
 
-    fun onContactUsClick() {
+    // 📌 Tema Seçimi (Cream Light, System Dynamic, Dark Night)
+    fun onThemeSelected(themeMode: AppThemeMode) {
         viewModelScope.launch {
-            _eventFlow.emit(SettingsEvent.SendEmail("destek@anlikdepremler.com"))
+            preferencesManager.saveSelectedThemeMode(themeMode.name)
         }
     }
 
@@ -73,12 +87,6 @@ class SettingsViewModel @Inject constructor(
     fun onFeedbackClick() {
         viewModelScope.launch {
             _eventFlow.emit(SettingsEvent.SendEmail("destek@anlikdepremler.com"))
-        }
-    }
-
-    fun onPrivacyPolicyClick() {
-        viewModelScope.launch {
-            _eventFlow.emit(SettingsEvent.NavigateToWeb("https://anlikdepremler.com/privacy"))
         }
     }
 

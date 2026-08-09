@@ -23,6 +23,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,25 +40,33 @@ fun LegalDocumentScreen(
 
     LaunchedEffect(documentType) {
         try {
-            // FirebaseApp ilklendirilmemişse garanti olsun diye burada da kontrol ediyoruz
             if (FirebaseApp.getApps(context).isEmpty()) {
                 FirebaseApp.initializeApp(context)
             }
 
-            FirebaseFirestore.getInstance()
-                .collection("AppTools")
+            val db = FirebaseFirestore.getInstance()
+            // 📌 Offline Çalışabilme ve Ağ Hatası Önleme Yapılandırması
+            val settings = FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(true)
+                .build()
+            db.firestoreSettings = settings
+
+            db.collection("AppTools")
                 .orderBy(documentType)
                 .addSnapshotListener { snapshot, error ->
                     isLoading = false
                     if (error == null && snapshot != null && !snapshot.isEmpty) {
                         htmlContent =
                             snapshot.documents.firstOrNull()?.getString(documentType) ?: ""
+                    } else {
+                        if (htmlContent.isEmpty()) {
+                            htmlContent = "<p>Lütfen internet bağlantınızı kontrol ediniz.</p>"
+                        }
                     }
                 }
         } catch (e: Exception) {
             isLoading = false
-            htmlContent =
-                "<p>Metin yüklenirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin.</p>"
+            htmlContent = "<p>Metin yüklenemedi. Lütfen tekrar deneyiniz.</p>"
             e.printStackTrace()
         }
     }
@@ -130,11 +139,6 @@ fun LegalDocumentScreen(
                 ) {
                     if (isLoading) {
                         CircularProgressIndicator(modifier = Modifier.padding(24.dp))
-                    } else if (htmlContent.isEmpty()) {
-                        Text(
-                            "Metin yüklenemedi. Lütfen internet bağlantınızı kontrol edin.",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
                     } else {
                         val textColor = MaterialTheme.colorScheme.onSurface.toArgb()
 
