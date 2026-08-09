@@ -29,8 +29,8 @@ android {
         applicationId = "com.ferdidrgn.anlikdepremler"
         minSdk = 24
         targetSdk = 36
-        versionCode = 28
-        versionName = "1.28"
+        versionCode = 29
+        versionName = "1.29"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += listOf("en", "tr")
@@ -67,6 +67,10 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+
+            // 📌 YERELDE (IDE ÜZERİNDEN) RELEASE TESTİ YAPABİLMEK İÇİN:
+            signingConfig = signingConfigs.getByName("debug")
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -119,7 +123,7 @@ dependencies {
     // 📌 Firebase BoM (Bill of Materials) - Sürüm yönetimini BoM yapar
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
 
-    // 📌 Sadece ana kütüphaneler (firebase-common-ktx BURADAN TEMİZLENDİ)
+    // 📌 Sadece ana kütüphaneler
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-analytics")
 
