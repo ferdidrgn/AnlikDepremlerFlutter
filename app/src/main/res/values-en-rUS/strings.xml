@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Recent Earthquakes</string>
+    <string name="home_title">Quake Tracker</string>
+    <string name="home_subtitle">Stay Safe 👋</string>
+    <string name="live_data">LIVE DATA</string>
+    <string name="daily_summary">Daily Summary</string>
+    <string name="total_today">Total Today</string>
+    <string name="max_magnitude">Highest Mag</string>
+    <string name="recent_earthquakes">Recent Earthquakes (%1$d)</string>
+    <string name="see_all">See All</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="select_language">App Language</string>
+    <string name="buy_coffee">Buy Me a Coffee</string>
+    <string name="rate_app">Rate the App</string>
+</resources>

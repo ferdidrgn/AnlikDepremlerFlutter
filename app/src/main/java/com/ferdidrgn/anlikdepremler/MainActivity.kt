@@ -16,13 +16,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.ferdi.deprem.navigation.Screen
-import com.ferdi.deprem.navigation.bottomNavItems
 import com.ferdi.deprem.ui.screens.EarthquakeListScreen
+import com.ferdidrgn.anlikdepremler.navigation.Screen
+import com.ferdidrgn.anlikdepremler.ui.components.CustomBottomNavigationBar
 import com.ferdidrgn.anlikdepremler.ui.screen.EarthquakeDetailScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.HomeScreen
-import com.ferdi.deprem.ui.screens.MapScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.MainViewModel
+import com.ferdidrgn.anlikdepremler.ui.screen.MapScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.OnboardingScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.SettingsScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.SplashScreen
@@ -62,38 +62,21 @@ fun MainAppScreen(mainViewModel: MainViewModel) {
 
     Scaffold(
         bottomBar = {
-            NavigationBar(
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onSurface
-            ) {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = navBackStackEntry?.destination?.route
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.destination?.route
 
-                bottomNavItems.forEach { screen ->
-                    NavigationBarItem(
-                        icon = { Icon(screen.icon, contentDescription = screen.title) },
-                        label = { Text(screen.title) },
-                        selected = currentRoute == screen.route,
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
-                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            indicatorColor = MaterialTheme.colorScheme.primaryContainer
-                        ),
-                        onClick = {
-                            if (currentRoute != screen.route) {
-                                navController.navigate(screen.route) {
-                                    popUpTo(Screen.Home.route) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
+            // Detay ekranına geçildiğinde bottom bar gizlenir
+            if (currentRoute != null && !currentRoute.startsWith("detail/")) {
+                CustomBottomNavigationBar(
+                    currentRoute = currentRoute,
+                    onNavItemClick = { screen ->
+                        navController.navigate(screen.route) {
+                            popUpTo(Screen.Home.route) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                    )
-                }
+                    }
+                )
             }
         }
     ) { innerPadding ->
@@ -127,11 +110,13 @@ fun MainAppScreen(mainViewModel: MainViewModel) {
             }
 
             // 3. HARİTA EKRANI
-            composable(Screen.Map.route) { MapScreen() }
+            composable(Screen.Map.route) {
+                MapScreen(viewModel = mainViewModel)
+            }
 
             // 4. AYARLAR EKRANI
             composable(Screen.Settings.route) {
-                SettingsScreen(mainViewModel = mainViewModel)
+                SettingsScreen(settingsViewModel = hiltViewModel())
             }
 
             // 5. DEPREM DETAY EKRANI

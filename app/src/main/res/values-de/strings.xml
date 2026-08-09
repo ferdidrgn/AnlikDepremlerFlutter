@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Erdbeben Tracking</string>
+    <string name="home_title">Beben Tracker</string>
+    <string name="home_subtitle">Bleib Sicher 👋</string>
+    <string name="live_data">LIVE-DATEN</string>
+    <string name="daily_summary">Tagesübersicht</string>
+    <string name="total_today">Heute Gesamt</string>
+    <string name="max_magnitude">Höchste Stärke</string>
+    <string name="recent_earthquakes">Neueste Erdbeben (%1$d)</string>
+    <string name="see_all">Alle Anzeigen</string>
+
+    <string name="settings_title">Einstellungen</string>
+    <string name="select_language">App-Sprache</string>
+    <string name="buy_coffee">Kauf mir einen Kaffee</string>
+    <string name="rate_app">App Bewerten</string>
+</resources>

@@ -4,19 +4,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ferdidrgn.anlikdepremler.core.datastore.PreferencesManager
 import com.ferdidrgn.anlikdepremler.core.language.AppLanguage
+import com.ferdidrgn.anlikdepremler.core.util.LocaleUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-sealed class SettingsEvent {
-    data class SendEmail(val email: String) : SettingsEvent()
-    object OpenNotificationSettings : SettingsEvent()
-    object OpenLocationSettings : SettingsEvent()
-    object RequestReview : SettingsEvent()
-    object ShareApp : SettingsEvent()
-    data class NavigateToWeb(val url: String) : SettingsEvent()
-    data class BuyCoffee(val productId: String) : SettingsEvent()
+// 📌 UI Event Yapısı
+sealed interface SettingsEvent {
+    data class SendEmail(val email: String) : SettingsEvent
+    object OpenNotificationSettings : SettingsEvent
+    object OpenLocationSettings : SettingsEvent
+    object RequestReview : SettingsEvent
+    object ShareApp : SettingsEvent
+    data class NavigateToWeb(val url: String) : SettingsEvent
+    data class BuyCoffee(val productId: String) : SettingsEvent
 }
 
 @HiltViewModel
@@ -33,6 +35,7 @@ class SettingsViewModel @Inject constructor(
 
     fun onLanguageSelected(language: AppLanguage) {
         viewModelScope.launch {
+            LocaleUtils.setAppLanguage(language.code)
             preferencesManager.saveSelectedLanguage(language.code)
         }
     }
@@ -43,20 +46,34 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onNotificationPermissionClick() {
-        viewModelScope.launch { _eventFlow.emit(SettingsEvent.OpenNotificationSettings) }
+    fun onNotificationSettingsClick() {
+        viewModelScope.launch {
+            _eventFlow.emit(SettingsEvent.OpenNotificationSettings)
+        }
     }
 
-    fun onLocationPermissionClick() {
-        viewModelScope.launch { _eventFlow.emit(SettingsEvent.OpenLocationSettings) }
+    fun onLocationSettingsClick() {
+        viewModelScope.launch {
+            _eventFlow.emit(SettingsEvent.OpenLocationSettings)
+        }
     }
 
     fun onRateAppClick() {
-        viewModelScope.launch { _eventFlow.emit(SettingsEvent.RequestReview) }
+        viewModelScope.launch {
+            _eventFlow.emit(SettingsEvent.RequestReview)
+        }
     }
 
     fun onShareAppClick() {
-        viewModelScope.launch { _eventFlow.emit(SettingsEvent.ShareApp) }
+        viewModelScope.launch {
+            _eventFlow.emit(SettingsEvent.ShareApp)
+        }
+    }
+
+    fun onFeedbackClick() {
+        viewModelScope.launch {
+            _eventFlow.emit(SettingsEvent.SendEmail("destek@sarsintitakip.com"))
+        }
     }
 
     fun onPrivacyPolicyClick() {
@@ -65,15 +82,9 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onTermsAndConditionsClick() {
-        viewModelScope.launch {
-            _eventFlow.emit(SettingsEvent.NavigateToWeb("https://sarsintitakip.com/terms"))
-        }
-    }
-
     fun onBuyCoffeeClick() {
         viewModelScope.launch {
-            _eventFlow.emit(SettingsEvent.BuyCoffee("donation_small_coffee"))
+            _eventFlow.emit(SettingsEvent.BuyCoffee("donation_small"))
         }
     }
 }

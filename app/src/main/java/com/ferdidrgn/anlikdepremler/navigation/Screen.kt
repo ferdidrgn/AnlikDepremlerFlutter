@@ -1,4 +1,4 @@
-package com.ferdidrgn.anlikdepremler
+package com.ferdidrgn.anlikdepremler.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
