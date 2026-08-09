@@ -11,6 +11,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.ferdidrgn.anlikdepremler.R
 
 enum class AppThemeMode {
     CREAM_LIGHT, // 1. Verdiğin Krem/Sarı Renk Paleti
