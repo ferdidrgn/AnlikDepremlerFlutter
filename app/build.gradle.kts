@@ -7,9 +7,9 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
 
-    // KSP & Hilt Pluginleri
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    // 📌 SÜRÜMÜ KÖK DİZİNDEN (ROOT) ALDIĞI İÇİN BURADA SADECE ID VEYA ALIAS İLE ÇAĞIRIYORUZ:
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 // --- local.properties okuma ---
@@ -123,13 +123,13 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-analytics")
 
-    // --- 📢 Google AdMob (Mobil Reklamlar) ---
+    // --- 🛒 Google Play Billing (Google Play Politikasına %100 Uyumlu) ---
+    implementation("com.android.billingclient:billing-ktx:8.0.0")
+
+    // --- 📢 Google AdMob ---
     implementation("com.google.android.gms:play-services-ads:23.3.0")
 
-    // --- 🛒 Google Play Billing ---
-    implementation("com.android.billingclient:billing-ktx:7.0.0")
-
-    // 🌟 Google Play In-App Review Kütüphanesi
+    // 🌟 Google Play In-App Review
     implementation("com.google.android.play:review:2.0.1")
     implementation("com.google.android.play:review-ktx:2.0.1")
 

@@ -92,7 +92,7 @@ fun EarthquakeListScreen(
         val sources = listOf(
             EarthquakeSource.KANDILLI to "Kandilli 🏢",
             EarthquakeSource.AFAD to "AFAD 🚨",
-            EarthquakeSource.TURKEY_ALL to "Orhan Aydoğdu 🌐",
+            EarthquakeSource.TURKEY_ALL to "Türkiye Karışık 🌐",
             EarthquakeSource.USGS to "USGS Dünya 🌍"
         )
 

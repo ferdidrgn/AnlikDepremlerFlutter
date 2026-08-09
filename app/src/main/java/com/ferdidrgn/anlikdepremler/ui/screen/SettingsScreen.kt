@@ -482,6 +482,10 @@ private fun launchCoffeeDonationFlow(context: Context, productId: String = DONAT
     val activity = context as? Activity ?: return
     lateinit var billingClient: BillingClient
 
+    val pendingPurchasesParams = PendingPurchasesParams.newBuilder()
+        .enableOneTimeProducts()
+        .build()
+
     billingClient = BillingClient.newBuilder(context)
         .setListener { billingResult, purchases ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
@@ -492,7 +496,7 @@ private fun launchCoffeeDonationFlow(context: Context, productId: String = DONAT
                 }
             }
         }
-        .enablePendingPurchases()
+        .enablePendingPurchases(pendingPurchasesParams)
         .build()
 
     billingClient.startConnection(object : BillingClientStateListener {
@@ -510,9 +514,10 @@ private fun launchCoffeeDonationFlow(context: Context, productId: String = DONAT
                     .setProductList(productList)
                     .build()
 
-                billingClient.queryProductDetailsAsync(params) { result, productDetailsList ->
-                    if (result.responseCode == BillingClient.BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
-                        val productDetails = productDetailsList.first()
+                billingClient.queryProductDetailsAsync(params) { result, productDetailsResult ->
+                    val list = productDetailsResult.productDetailsList
+                    if (result.responseCode == BillingClient.BillingResponseCode.OK && !list.isNullOrEmpty()) {
+                        val productDetails = list.first()
                         val flowParams = BillingFlowParams.newBuilder()
                             .setProductDetailsParamsList(
                                 listOf(
