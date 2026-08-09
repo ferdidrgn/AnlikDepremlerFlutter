@@ -1,0 +1,12 @@
+# Set the default behavior of git for line endings.
+* text=auto
+
+# Ensure bash/gradlew scripts always use LF (Linux line endings)
+gradlew text eol=lf
+*.sh text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.webp binary
+*.jar binary

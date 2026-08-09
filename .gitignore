@@ -1,0 +1,37 @@
+# Gradle build outputs & caches
+*.apk
+*.aar
+*.aab
+*.dex
+*.class
+**/build/
+**/.gradle/
+.navigation/
+
+# Local configuration files (HASSAS BİLGİLER & API KEY'LER)
+local.properties
+.gradle
+.idea/
+*.iml
+.DS_Store
+
+# Android Studio / IntelliJ IDEA
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/assetWizardSettings.xml
+.idea/dictionaries
+.idea/libraries/
+.idea/caches/
+.idea/compiler.xml
+
+# Keystore files (Yayınlama Anahtarları)
+*.jks
+*.keystore
+*.pepk
+
+# Log files
+*.log
+
+# Captures and profiling
+/captures
