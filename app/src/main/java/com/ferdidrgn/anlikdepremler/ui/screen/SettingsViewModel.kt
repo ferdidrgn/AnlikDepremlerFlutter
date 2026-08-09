@@ -48,17 +48,12 @@ class SettingsViewModel @Inject constructor(
     // 📌 Dil Seçimi (Arayüzü Anında Yeniler)
     fun onLanguageSelected(context: Context, language: AppLanguage) {
         viewModelScope.launch {
-            // 1. DataStore'a kaydet
             preferencesManager.saveSelectedLanguage(language.code)
+            LocaleHelper.applyLanguage(context, language.code)
 
-            // 2. Dil konfigürasyonunu uygula
-            LocaleHelper.setAppLanguage(context, language.code)
-
-            // 3. Android 7-12 cihazlarda ekranın anında yeni dille açılması için Activity'yi yeniden başlat
+            // Activity'yi tazeleyerek tüm String kaynaklarını yeni dilden oku
             (context as? Activity)?.let { activity ->
-                activity.finish()
-                activity.startActivity(activity.intent)
-                activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                activity.recreate()
             }
         }
     }

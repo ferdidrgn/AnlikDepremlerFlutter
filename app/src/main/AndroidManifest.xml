@@ -11,14 +11,19 @@
     <uses-permission android:name="com.android.vending.BILLING" />
 
     <queries>
+        <!-- 1. Google Play Store uygulamasının varlığını sorgulamaya izin verir (In-App Review / Coffee Donation / Güncelleme kontrolleri için şarttır). -->
         <package android:name="com.android.vending" />
+
+        <!-- 2. Google Play Hizmetleri'nin (Google Maps, Location, Firebase) cihazda yüklü olup olmadığını denetler. -->
         <package android:name="com.google.android.gms" />
 
+        <!-- 3. Uygulama içinden bir linke tıklandığında (örn: Gizlilik Politikası, Harita Linki) cihazdaki varsayılan Web Tarayıcısını (Chrome vb.) açabilmesini sağlar. -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="https" />
         </intent>
 
+        <!-- 4. Kullanıcı acil durumda veya ayarlarda bir telefon numarasına tıkladığında Arama/Arama Ekranını (Dialer) açabilmesine izin verir. -->
         <intent>
             <action android:name="android.intent.action.DIAL" />
         </intent>
@@ -39,6 +44,15 @@
         android:theme="@style/Theme.Material3.DayNight.NoActionBar"
         android:usesCleartextTraffic="true"
         tools:targetApi="36">
+
+        <!-- 🔔 1. FIREBASE MESSAGING SERVICE (<application> İÇİNE TAŞINDI) -->
+        <service
+            android:name=".core.notification.EarthquakeFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <!-- 👈 2. ÇAKIŞMAYI ÇÖZEN ÖZEL PROPERTY EKLEMESİ -->
         <property

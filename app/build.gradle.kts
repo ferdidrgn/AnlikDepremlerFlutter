@@ -6,6 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 
     // 📌 SÜRÜMÜ KÖK DİZİNDEN (ROOT) ALDIĞI İÇİN BURADA SADECE ID VEYA ALIAS İLE ÇAĞIRIYORUZ:
     id("com.google.devtools.ksp")
@@ -126,9 +127,14 @@ dependencies {
     // 📌 Firebase BoM (Bill of Materials) - Sürüm yönetimini BoM yapar
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
 
-    // 📌 Sadece ana kütüphaneler
+    // Cloud Firestore (Hissettim bildirimleri, anonim istatistikler için)
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
+    // Firebase Cloud Messaging (Arka plan bildirimi için)
+    implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     // --- 🛒 Google Play Billing (Google Play Politikasına %100 Uyumlu) ---
     implementation("com.android.billingclient:billing-ktx:8.0.0")

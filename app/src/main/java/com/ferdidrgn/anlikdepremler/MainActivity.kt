@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -20,6 +21,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ferdi.deprem.ui.screens.EarthquakeListScreen
+import com.ferdidrgn.anlikdepremler.core.language.LocaleHelper
 import com.ferdidrgn.anlikdepremler.core.navigation.DeepLinkHelper
 import com.ferdidrgn.anlikdepremler.navigation.Screen
 import com.ferdidrgn.anlikdepremler.ui.components.CustomBottomNavigationBar
@@ -31,6 +33,7 @@ import com.ferdidrgn.anlikdepremler.ui.screen.MainViewModel
 import com.ferdidrgn.anlikdepremler.ui.screen.MapScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.OnboardingScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.SettingsScreen
+import com.ferdidrgn.anlikdepremler.ui.screen.SettingsViewModel
 import com.ferdidrgn.anlikdepremler.ui.screen.SplashScreen
 import com.ferdidrgn.anlikdepremler.ui.theme.DepremTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -41,36 +44,43 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         enableEdgeToEdge()
 
         setContent {
-            val mainViewModel: MainViewModel = hiltViewModel()
-            val uiState by mainViewModel.uiState.collectAsState()
-            val isOnboardingCompleted by mainViewModel.isOnboardingCompleted.collectAsState()
+            val settingsViewModel: SettingsViewModel = hiltViewModel()
+            val currentLanguage by settingsViewModel.currentLanguage.collectAsState()
 
-            var isSplashActive by remember { mutableStateOf(true) }
+            // 🌐 DİL DEĞİŞİKLİĞİNDE DİNAMİK RE-COMPOSITION BAĞLAMI
+            val context = LocalContext.current
+            val localizedContext = remember(currentLanguage) {
+                LocaleHelper.applyLanguage(context, currentLanguage.code)
+            }
 
-            DepremTheme(themeMode = uiState.currentTheme) {
-                val systemUiController = rememberSystemUiController()
-                val useDarkIcons = !isSystemInDarkTheme()
-                val statusBarColor = MaterialTheme.colorScheme.background
+            CompositionLocalProvider(LocalContext provides localizedContext) {
+                val mainViewModel: MainViewModel = hiltViewModel()
+                val uiState by mainViewModel.uiState.collectAsState()
+                val isOnboardingCompleted by mainViewModel.isOnboardingCompleted.collectAsState()
 
-                DisposableEffect(systemUiController, useDarkIcons, statusBarColor) {
-                    systemUiController.setStatusBarColor(
-                        color = Color.Transparent,
-                        darkIcons = useDarkIcons
-                    )
-                    onDispose {}
-                }
+                var isSplashActive by remember { mutableStateOf(true) }
 
-                Box(modifier = Modifier.fillMaxSize()) {
-                    if (isSplashActive) {
-                        SplashScreen(onSplashFinished = { isSplashActive = false })
-                    } else if (!isOnboardingCompleted) {
-                        OnboardingScreen(onFinishOnboarding = { mainViewModel.completeOnboarding() })
-                    } else {
-                        MainAppScreen(mainViewModel = mainViewModel)
+                DepremTheme(themeMode = uiState.currentTheme) {
+                    val systemUiController = rememberSystemUiController()
+                    val useDarkIcons = !isSystemInDarkTheme()
+
+                    DisposableEffect(systemUiController, useDarkIcons) {
+                        systemUiController.setStatusBarColor(
+                            color = Color.Transparent,
+                            darkIcons = useDarkIcons
+                        )
+                        onDispose {}
+                    }
+
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        if (isSplashActive)
+                            SplashScreen(onSplashFinished = { isSplashActive = false })
+                        else if (!isOnboardingCompleted)
+                            OnboardingScreen(onFinishOnboarding = { mainViewModel.completeOnboarding() })
+                        else MainAppScreen(mainViewModel = mainViewModel)
                     }
                 }
             }

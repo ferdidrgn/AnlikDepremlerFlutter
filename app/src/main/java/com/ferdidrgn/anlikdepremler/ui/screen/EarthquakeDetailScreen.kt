@@ -191,6 +191,15 @@ fun EarthquakeDetailScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            SeismicImpactCard(
+                magnitude = earthquake.magnitude,
+                depth = earthquake.depth,
+                feltCount = 142, // Varsayılan/Firebase'den gelen sayı
+                onFeltClicked = {
+                    // "Ben de hissettim" butonuna basıldığında yapılacak işlem
+                }
+            )
+
             // 4. HAYAT KURTARICI DÜDÜĞÜ
             Card(
                 modifier = Modifier.fillMaxWidth(),

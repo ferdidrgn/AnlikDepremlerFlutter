@@ -10,20 +10,19 @@ import java.util.Locale
 
 object LocaleHelper {
 
-    fun setAppLanguage(context: Context, languageCode: String): Context {
+    fun applyLanguage(context: Context, languageCode: String): Context {
         val locale = Locale(languageCode)
         Locale.setDefault(locale)
 
-        val resources = context.resources
-        val config = Configuration(resources.configuration)
-
-        // 1. Android 13+ (API 33+) Sistem Dili Güncellemesi
+        // Android 13+ Sistem Desteği
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val appLocale = LocaleListCompat.forLanguageTags(languageCode)
             AppCompatDelegate.setApplicationLocales(appLocale)
         }
 
-        // 2. Android 7.0 - 12 (API 24 - 32) Legacy Desteği
+        val resources = context.resources
+        val config = Configuration(resources.configuration)
+
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             config.setLocale(locale)
             val localeList = LocaleList(locale)
