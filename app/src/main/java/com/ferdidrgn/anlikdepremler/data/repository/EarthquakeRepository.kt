@@ -30,10 +30,15 @@ class EarthquakeRepository @Inject constructor(
                     }
 
                     EarthquakeSource.AFAD -> {
+                        val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date())
+                        val fourDaysAgo = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+                            .format(java.util.Date(System.currentTimeMillis() - 4 * 24 * 60 * 60 * 1000L))
+
                         val response = afadApi.getTurkeyAfadEarthquakes(
-                            beforeFourDays = "2026-08-01",
-                            tomarow = "2026-08-09"
+                            beforeFourDays = fourDaysAgo,
+                            tomarow = today
                         )
+
                         response.body()?.map { it.toDomain() } ?: emptyList()
                     }
 

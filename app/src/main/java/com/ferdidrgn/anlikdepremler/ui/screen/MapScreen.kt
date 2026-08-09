@@ -23,11 +23,13 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ferdi.deprem.model.Earthquake
+import com.ferdidrgn.anlikdepremler.R
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -51,7 +53,6 @@ fun MapScreen(
     viewModel: MainViewModel,
     onBackClick: () -> Unit = {}
 ) {
-    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -93,7 +94,6 @@ fun MapScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // 1. GOOGLE MAPS COMPOSER & CUSTOM MARKERS
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
@@ -106,7 +106,7 @@ fun MapScreen(
                 items = clusterItems,
                 clusterItemContent = { item ->
                     val isSelected = item.earthquake.id == selectedEarthquakeId
-                    CustomMarkerBadge(
+                    ModernMapPin(
                         magnitude = item.earthquake.magnitude,
                         isSelected = isSelected
                     )
@@ -124,7 +124,6 @@ fun MapScreen(
             )
         }
 
-        // 2. ÜST YÜZEN ARAMA PANELİ
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -145,7 +144,7 @@ fun MapScreen(
                 ) {
                     Icon(
                         Icons.Default.Close,
-                        contentDescription = "Kapat",
+                        contentDescription = stringResource(R.string.close),
                         modifier = Modifier.padding(12.dp)
                     )
                 }
@@ -170,7 +169,12 @@ fun MapScreen(
                         OutlinedTextField(
                             value = searchQuery,
                             onValueChange = { searchQuery = it },
-                            placeholder = { Text("Haritada Şehir/Bölge Ara...", fontSize = 13.sp) },
+                            placeholder = {
+                                Text(
+                                    stringResource(R.string.search_map_placeholder),
+                                    fontSize = 13.sp
+                                )
+                            },
                             singleLine = true,
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = Color.Transparent,
@@ -183,7 +187,6 @@ fun MapScreen(
             }
         }
 
-        // 3. ALT DEPREM KARTLARI CAROUSEL
         if (mapList.isNotEmpty()) {
             LazyRow(
                 state = lazyListState,
@@ -222,103 +225,61 @@ fun MapScreen(
     }
 }
 
-// 📍 LÜKS NEOMORFİK HARİTA PİNİ
 @Composable
-fun CustomMarkerBadge(
+fun ModernMapPin(
     magnitude: Double,
     isSelected: Boolean
 ) {
-    val (baseColor, accentColor) = when {
-        magnitude >= 5.0 -> Color(0xFFE53935) to Color(0xFFFF5252)
-        magnitude >= 3.5 -> Color(0xFFFB8C00) to Color(0xFFFFB74D)
-        else -> Color(0xFF43A047) to Color(0xFF81C784)
+    val (primaryColor, glowColor) = when {
+        magnitude >= 5.0 -> Color(0xFFEF4444) to Color(0xFFFCA5A5) // Kırmızı
+        magnitude >= 3.5 -> Color(0xFFF59E0B) to Color(0xFFFDE68A) // Turuncu
+        else -> Color(0xFF10B981) to Color(0xFFA7F3D0)             // Yeşil
     }
 
-    val scale by animateFloatAsState(
-        targetValue = if (isSelected) 1.3f else 1.0f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        ),
-        label = "markerScale"
-    )
-
-    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
-    val waveScale by infiniteTransition.animateFloat(
-        initialValue = 0.8f,
-        targetValue = 2.0f,
-        animationSpec = infiniteRepeatable(tween(1300, easing = LinearEasing), RepeatMode.Restart),
-        label = "waveScale"
-    )
-    val waveAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.5f,
-        targetValue = 0.0f,
-        animationSpec = infiniteRepeatable(tween(1300, easing = LinearEasing), RepeatMode.Restart),
-        label = "waveAlpha"
+    val pinScale by animateFloatAsState(
+        targetValue = if (isSelected) 1.25f else 1.0f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = "pinScale"
     )
 
     Box(
         modifier = Modifier
-            .scale(scale)
+            .scale(pinScale)
             .wrapContentSize(),
         contentAlignment = Alignment.Center
     ) {
-        if (magnitude >= 3.5 || isSelected) {
-            Box(
-                modifier = Modifier
-                    .size(52.dp * waveScale)
-                    .clip(CircleShape)
-                    .background(baseColor.copy(alpha = waveAlpha))
-            )
-        }
+        // Arka Plan Işıma (Glow Effect)
+        Surface(
+            modifier = Modifier.size(if (isSelected) 46.dp else 38.dp),
+            shape = CircleShape,
+            color = glowColor.copy(alpha = 0.4f)
+        ) {}
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.offset(y = (-10).dp)
+        // Ana Cam Kart Pin
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = primaryColor,
+            shadowElevation = if (isSelected) 12.dp else 4.dp,
+            border = BorderStroke(2.dp, Color.White)
         ) {
-            Surface(
-                shape = CircleShape,
-                color = Color.Transparent,
-                shadowElevation = if (isSelected) 10.dp else 4.dp
+            Row(
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(if (isSelected) 46.dp else 38.dp)
-                        .background(
-                            brush = Brush.radialGradient(
-                                colors = listOf(accentColor, baseColor)
-                            ),
-                            shape = CircleShape
-                        )
-                        .border(
-                            width = if (isSelected) 3.dp else 2.dp,
-                            color = if (isSelected) Color(0xFFFFD700) else Color.White,
-                            shape = CircleShape
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = String.format("%.1f", magnitude),
-                        color = Color.White,
-                        fontWeight = FontWeight.Black,
-                        fontSize = if (isSelected) 15.sp else 13.sp,
-                        letterSpacing = (-0.5).sp
-                    )
-                }
+                Text(
+                    text = String.format("%.1f", magnitude),
+                    color = Color.White,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 13.sp
+                )
+                Text(
+                    text = "Mw",
+                    color = Color.White.copy(alpha = 0.8f),
+                    fontSize = 9.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
-
-            Box(
-                modifier = Modifier
-                    .offset(y = (-3).dp)
-                    .size(width = 10.dp, height = 8.dp)
-                    .clip(RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp))
-                    .background(baseColor)
-                    .border(
-                        width = 1.dp,
-                        color = Color.White.copy(alpha = 0.5f),
-                        shape = RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)
-                    )
-            )
         }
     }
 }
@@ -375,7 +336,12 @@ fun MapEarthquakeCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "${earthquake.time} • Derinlik: ${earthquake.depth} km",
+                    text = "${earthquake.time} • ${
+                        stringResource(
+                            R.string.depth_label,
+                            earthquake.depth
+                        )
+                    }",
                     style = MaterialTheme.typography.bodyMedium,
                     fontSize = 11.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant

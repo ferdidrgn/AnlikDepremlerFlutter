@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,10 +21,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.ferdidrgn.anlikdepremler.R
 import kotlinx.coroutines.launch
 
 data class OnboardingItemData(
@@ -36,49 +39,47 @@ data class OnboardingItemData(
     val floatingCardImageUrl: String
 )
 
-val onboardingPagesList = listOf(
-    OnboardingItemData(
-        title = "Sismik Takip\nGüvenli Ellerde",
-        description = "Kandilli, AFAD ve USGS verileriyle 7/24 anlık sarsıntı analizi ve canlı fay hattı takibi.",
-        // 1. GÖRSEL DÜZELTİLDİ (Çalışan Yüksek Kaliteli Sismograf/Harita Görseli)
-        imageUrl = "https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1200&auto=format&fit=crop",
-        badgeTitle = "🔴 CANLI SİSMİK",
-        floatingCardTitle = "Son Sarsıntı: Marmara",
-        floatingCardSubtitle = "4.2 Mw • 8.5 km derinlik",
-        floatingCardImageUrl = "https://picsum.photos/200/200?random=10"
-    ),
-    OnboardingItemData(
-        title = "Erken Uyarı &\nKonum Analizi",
-        description = "Bölgenizdeki fay hatlarını inceleyin, 3 saniyede otomatik sorgulama ile güvende kalın.",
-        // 2. GÖRSEL DÜZELTİLDİ (Çok Daha Kaliteli ve Anlamlı Akıllı Şehir/Harita Görseli)
-        imageUrl = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop",
-        badgeTitle = "📍 AKILLI KONUM",
-        floatingCardTitle = "Bölgesel Risk Haritası",
-        floatingCardSubtitle = "Yüksek hassasiyetli sismograf",
-        floatingCardImageUrl = "https://picsum.photos/200/200?random=20"
-    ),
-    OnboardingItemData(
-        title = "Güvende Kalın,\nHazırlıklı Olun!",
-        // 3. SAYFA AÇIKLAMALARI VE METİNLERİ DAHA BÜYÜK VE DİKKAT ÇEKİCİ HALE GETİRİLDİ
-        description = "Acil durum çantası kontrol listesi ve hayat kurtaran çök-kapan-tutun rehberleri ile ailenizin güvenliğini şansa bırakmayın.",
-        imageUrl = "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?q=80&w=1200&auto=format&fit=crop",
-        badgeTitle = "🎒 AFET BİLİNCİ",
-        floatingCardTitle = "Acil Durum Çantası Kontrolü",
-        floatingCardSubtitle = "Stok durumu %100 hazır ve güncel",
-        floatingCardImageUrl = "https://picsum.photos/200/200?random=30"
-    )
-)
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreen(
     onFinishOnboarding: () -> Unit
 ) {
+    val onboardingPagesList = remember {
+        listOf(
+            OnboardingItemData(
+                title = "onboarding_title_1",
+                description = "onboarding_desc_1",
+                imageUrl = "https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1200&auto=format&fit=crop",
+                badgeTitle = "onboarding_badge_1",
+                floatingCardTitle = "onboarding_float_title_1",
+                floatingCardSubtitle = "onboarding_float_sub_1",
+                floatingCardImageUrl = "https://picsum.photos/200/200?random=10"
+            ),
+            OnboardingItemData(
+                title = "onboarding_title_2",
+                description = "onboarding_desc_2",
+                imageUrl = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop",
+                badgeTitle = "onboarding_badge_2",
+                floatingCardTitle = "onboarding_float_title_2",
+                floatingCardSubtitle = "onboarding_float_sub_2",
+                floatingCardImageUrl = "https://picsum.photos/200/200?random=20"
+            ),
+            OnboardingItemData(
+                title = "onboarding_title_3",
+                description = "onboarding_desc_3",
+                imageUrl = "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?q=80&w=1200&auto=format&fit=crop",
+                badgeTitle = "onboarding_badge_3",
+                floatingCardTitle = "onboarding_float_title_3",
+                floatingCardSubtitle = "onboarding_float_sub_3",
+                floatingCardImageUrl = "https://picsum.photos/200/200?random=30"
+            )
+        )
+    }
+
     val pagerState = rememberPagerState(pageCount = { onboardingPagesList.size })
     val scope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // 1. TAM EKRAN KAYDIRILABİLİR SİNEMATİK ONBOARDING
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize()
@@ -89,7 +90,6 @@ fun OnboardingScreen(
             )
         }
 
-        // 2. SABİT ÜST BAR (BRANDING & ATLAMA)
         Row(
             modifier = Modifier
                 .statusBarsPadding()
@@ -103,7 +103,7 @@ fun OnboardingScreen(
                 color = Color.Black.copy(alpha = 0.45f)
             ) {
                 Text(
-                    text = "Sarsıntı Takip",
+                    text = stringResource(R.string.app_branding),
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
@@ -112,7 +112,7 @@ fun OnboardingScreen(
             }
 
             Text(
-                text = "Atla",
+                text = stringResource(R.string.onboarding_skip),
                 color = Color.White.copy(alpha = 0.9f),
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp,
@@ -124,7 +124,6 @@ fun OnboardingScreen(
             )
         }
 
-        // 3. ALT KONTROL ALANI (SAYFA İNDİKATÖRÜ VE İLERLE BUTONU)
         Row(
             modifier = Modifier
                 .navigationBarsPadding()
@@ -134,7 +133,6 @@ fun OnboardingScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Sayfa İndikatörleri (Noktalar)
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -153,7 +151,6 @@ fun OnboardingScreen(
                 }
             }
 
-            // Yuvarlak İlerleme / Başla Butonu
             FloatingActionButton(
                 onClick = {
                     if (pagerState.currentPage < onboardingPagesList.size - 1) {
@@ -171,7 +168,7 @@ fun OnboardingScreen(
             ) {
                 Icon(
                     imageVector = if (pagerState.currentPage == onboardingPagesList.size - 1) Icons.Default.Check else Icons.Default.ArrowForward,
-                    contentDescription = "İlerle",
+                    contentDescription = stringResource(R.string.onboarding_next),
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -184,8 +181,33 @@ private fun OnboardingFullImagePage(
     data: OnboardingItemData,
     isLastPage: Boolean
 ) {
+    val titleRes = when (data.title) {
+        "onboarding_title_1" -> R.string.onboarding_title_1
+        "onboarding_title_2" -> R.string.onboarding_title_2
+        else -> R.string.onboarding_title_3
+    }
+    val descRes = when (data.description) {
+        "onboarding_desc_1" -> R.string.onboarding_desc_1
+        "onboarding_desc_2" -> R.string.onboarding_desc_2
+        else -> R.string.onboarding_desc_3
+    }
+    val badgeRes = when (data.badgeTitle) {
+        "onboarding_badge_1" -> R.string.onboarding_badge_1
+        "onboarding_badge_2" -> R.string.onboarding_badge_2
+        else -> R.string.onboarding_badge_3
+    }
+    val floatTitleRes = when (data.floatingCardTitle) {
+        "onboarding_float_title_1" -> R.string.onboarding_float_title_1
+        "onboarding_float_title_2" -> R.string.onboarding_float_title_2
+        else -> R.string.onboarding_float_title_3
+    }
+    val floatSubRes = when (data.floatingCardSubtitle) {
+        "onboarding_float_sub_1" -> R.string.onboarding_float_sub_1
+        "onboarding_float_sub_2" -> R.string.onboarding_float_sub_2
+        else -> R.string.onboarding_float_sub_3
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
-        // A. Tam Ekran Yüksek Çözünürlüklü Görsel
         AsyncImage(
             model = data.imageUrl,
             contentDescription = null,
@@ -193,7 +215,6 @@ private fun OnboardingFullImagePage(
             modifier = Modifier.fillMaxSize()
         )
 
-        // B. Metin Okunabilirliği İçin Dikey Gradyan Karartma Overlay
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -208,7 +229,6 @@ private fun OnboardingFullImagePage(
                 )
         )
 
-        // C. Görsel Üzerindeki Tipografi ve Yüzen Kartlar
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -216,14 +236,13 @@ private fun OnboardingFullImagePage(
                 .padding(bottom = 105.dp),
             verticalArrangement = Arrangement.Bottom
         ) {
-            // Rozet (Badge)
             Surface(
                 shape = RoundedCornerShape(30.dp),
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.85f),
                 modifier = Modifier.padding(bottom = 12.dp)
             ) {
                 Text(
-                    text = data.badgeTitle,
+                    text = stringResource(badgeRes),
                     color = Color.White,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.ExtraBold,
@@ -232,9 +251,8 @@ private fun OnboardingFullImagePage(
                 )
             }
 
-            // Ana Başlık (Son sayfada veya kritik anlarda belirgin font)
             Text(
-                text = data.title,
+                text = stringResource(titleRes),
                 style = MaterialTheme.typography.displayLarge,
                 fontSize = if (isLastPage) 38.sp else 34.sp,
                 fontWeight = FontWeight.Black,
@@ -244,9 +262,8 @@ private fun OnboardingFullImagePage(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Alt Açıklama Metni (Metin boyutu büyütüldü ve okunabilirlik artırıldı)
             Text(
-                text = data.description,
+                text = stringResource(descRes),
                 style = MaterialTheme.typography.bodyLarge,
                 fontSize = if (isLastPage) 16.sp else 15.sp,
                 fontWeight = FontWeight.Medium,
@@ -256,7 +273,6 @@ private fun OnboardingFullImagePage(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // D. Glassmorphic Yüzen Cam Kart
             Surface(
                 shape = RoundedCornerShape(22.dp),
                 color = Color.White.copy(alpha = 0.18f),
@@ -277,13 +293,13 @@ private fun OnboardingFullImagePage(
                     Spacer(modifier = Modifier.width(14.dp))
                     Column {
                         Text(
-                            text = data.floatingCardTitle,
+                            text = stringResource(floatTitleRes),
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp
                         )
                         Text(
-                            text = data.floatingCardSubtitle,
+                            text = stringResource(floatSubRes),
                             color = Color.White.copy(alpha = 0.8f),
                             fontSize = 12.sp
                         )

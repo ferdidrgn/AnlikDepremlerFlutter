@@ -6,9 +6,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ferdidrgn.anlikdepremler.R
 import com.ferdidrgn.anlikdepremler.core.ads.BannerAdView
 
 @Composable
@@ -45,7 +47,7 @@ fun NativeAdCard(
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
                 ) {
                     Text(
-                        text = "SPONSORLU",
+                        text = stringResource(R.string.ad_sponsored),
                         color = MaterialTheme.colorScheme.primary,
                         fontSize = 9.sp,
                         fontWeight = FontWeight.Bold,
@@ -53,7 +55,7 @@ fun NativeAdCard(
                     )
                 }
                 Text(
-                    text = "Reklam",
+                    text = stringResource(R.string.ad_label),
                     fontSize = 10.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
@@ -61,7 +63,6 @@ fun NativeAdCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Mobil Banner / Native Ad Entegrasyonu
             BannerAdView(modifier = Modifier.fillMaxWidth())
         }
     }

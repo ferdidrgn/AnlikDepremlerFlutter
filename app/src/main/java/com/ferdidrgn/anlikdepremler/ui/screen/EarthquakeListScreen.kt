@@ -19,12 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ferdi.deprem.model.Earthquake
+import com.ferdidrgn.anlikdepremler.R
 import com.ferdidrgn.anlikdepremler.data.remote.EarthquakeSource
 import com.ferdidrgn.anlikdepremler.ui.components.NativeAdCard
 import com.ferdidrgn.anlikdepremler.ui.screen.MainViewModel
@@ -39,7 +41,6 @@ fun EarthquakeListScreen(
     var searchQuery by remember { mutableStateOf("") }
     var minMagnitudeFilter by remember { mutableStateOf(0.0) }
 
-    // Arama ve Büyüklük Filtreleme
     val filteredList = uiState.earthquakes.filter { eq ->
         val matchesQuery = eq.location.contains(searchQuery, ignoreCase = true) ||
                 eq.region.contains(searchQuery, ignoreCase = true)
@@ -63,12 +64,12 @@ fun EarthquakeListScreen(
         ) {
             Column {
                 Text(
-                    text = "Sismik Akış",
+                    text = stringResource(R.string.seismic_flow_title),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "Tüm Depremler",
+                    text = stringResource(R.string.all_earthquakes_title),
                     style = MaterialTheme.typography.displayLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -78,7 +79,7 @@ fun EarthquakeListScreen(
                 color = MaterialTheme.colorScheme.primaryContainer
             ) {
                 Text(
-                    text = "${filteredList.size} Kayıt",
+                    text = stringResource(R.string.record_count, filteredList.size),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
@@ -88,13 +89,13 @@ fun EarthquakeListScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // 2. DİNAMİK API KAYNAK SEÇİCİ (Kandilli, AFAD, Orhan Aydoğdu, USGS)
+        // 2. DİNAMİK API KAYNAK SEÇİCİ
         val sources = listOf(
-            EarthquakeSource.KANDILLI to "Kandilli 🏢",
-            EarthquakeSource.AFAD to "AFAD 🚨",
-            EarthquakeSource.TURKEY_ALL to "Türkiye Karışık 🌐",
-            EarthquakeSource.USGS to "USGS Dünya 🌍",
-            EarthquakeSource.WORLD_IGP to "Dünya (IGP) 🌍"
+            EarthquakeSource.KANDILLI to stringResource(R.string.source_kandilli),
+            EarthquakeSource.AFAD to stringResource(R.string.source_afad),
+            EarthquakeSource.TURKEY_ALL to stringResource(R.string.source_turkey_all),
+            EarthquakeSource.USGS to stringResource(R.string.source_usgs),
+            EarthquakeSource.WORLD_IGP to stringResource(R.string.source_world_igp)
         )
 
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -127,12 +128,12 @@ fun EarthquakeListScreen(
             value = searchQuery,
             onValueChange = { searchQuery = it },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Şehir veya bölge ara...") },
+            placeholder = { Text(stringResource(R.string.search_city_or_region)) },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
                     IconButton(onClick = { searchQuery = "" }) {
-                        Icon(Icons.Default.Close, contentDescription = "Temizle")
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.close))
                     }
                 }
             },
@@ -146,7 +147,12 @@ fun EarthquakeListScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            val filterOptions = listOf(0.0 to "Tümü", 3.0 to "3.0+", 4.0 to "4.0+", 5.0 to "5.0+")
+            val filterOptions = listOf(
+                0.0 to stringResource(R.string.filter_all),
+                3.0 to "3.0+",
+                4.0 to "4.0+",
+                5.0 to "5.0+"
+            )
             filterOptions.forEach { (mag, label) ->
                 FilterChip(
                     selected = minMagnitudeFilter == mag,
@@ -164,7 +170,7 @@ fun EarthquakeListScreen(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        // 5. DEPREM LİSTESİ (Modelin Kendi Görseli İle)
+        // 5. DEPREM LİSTESİ
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             contentPadding = PaddingValues(bottom = 90.dp)
@@ -214,7 +220,6 @@ fun PremiumEarthquakeCard(
                 .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // 🏙️ ESKİ TEMİZ GÖRSEL LİNKİ (Modeldeki cityImageUrl)
             AsyncImage(
                 model = earthquake.cityImageUrl.ifEmpty { "https://picsum.photos/400/250?random=${earthquake.id}" },
                 contentDescription = earthquake.location,
@@ -243,7 +248,7 @@ fun PremiumEarthquakeCard(
                     fontSize = 12.sp
                 )
                 Text(
-                    text = "Kaynak: ${earthquake.source}",
+                    text = stringResource(R.string.source_label, earthquake.source),
                     fontSize = 10.sp,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold

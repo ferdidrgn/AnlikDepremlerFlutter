@@ -16,11 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
+import com.ferdidrgn.anlikdepremler.R
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -36,7 +38,10 @@ fun LegalDocumentScreen(
     var isLoading by remember { mutableStateOf(true) }
 
     val isPrivacy = documentType.equals("privacy_policy", ignoreCase = true)
-    val title = if (isPrivacy) "Gizlilik Politikası" else "Kullanım Koşulları"
+    val title =
+        if (isPrivacy) stringResource(R.string.privacy_policy) else stringResource(R.string.terms_conditions)
+    val offlineErrorText = stringResource(R.string.error_offline_text)
+    val loadErrorText = stringResource(R.string.error_load_text)
 
     LaunchedEffect(documentType) {
         try {
@@ -45,7 +50,6 @@ fun LegalDocumentScreen(
             }
 
             val db = FirebaseFirestore.getInstance()
-            // 📌 Offline Çalışabilme ve Ağ Hatası Önleme Yapılandırması
             val settings = FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(true)
                 .build()
@@ -60,13 +64,13 @@ fun LegalDocumentScreen(
                             snapshot.documents.firstOrNull()?.getString(documentType) ?: ""
                     } else {
                         if (htmlContent.isEmpty()) {
-                            htmlContent = "<p>Lütfen internet bağlantınızı kontrol ediniz.</p>"
+                            htmlContent = "<p>$offlineErrorText</p>"
                         }
                     }
                 }
         } catch (e: Exception) {
             isLoading = false
-            htmlContent = "<p>Metin yüklenemedi. Lütfen tekrar deneyiniz.</p>"
+            htmlContent = "<p>$loadErrorText</p>"
             e.printStackTrace()
         }
     }
@@ -77,7 +81,10 @@ fun LegalDocumentScreen(
                 title = { Text(title, fontWeight = FontWeight.Bold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Geri")
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
@@ -112,13 +119,15 @@ fun LegalDocumentScreen(
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
-                            text = if (isPrivacy) "Veri Güvenliğiniz Bizim İçin Önemli" else "Kullanım Şartları & Kurallar",
+                            text = if (isPrivacy) stringResource(R.string.privacy_header_title) else stringResource(
+                                R.string.terms_header_title
+                            ),
                             fontWeight = FontWeight.Bold,
                             fontSize = 13.sp,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
-                            text = "Son Güncelleme: 2026",
+                            text = stringResource(R.string.last_update),
                             fontSize = 11.sp,
                             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
                         )

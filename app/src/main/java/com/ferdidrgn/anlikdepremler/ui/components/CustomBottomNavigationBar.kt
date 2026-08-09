@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +45,7 @@ fun CustomBottomNavigationBar(
         ) {
             bottomNavItems.forEach { screen ->
                 val isSelected = currentRoute == screen.route
+                val title = stringResource(screen.titleRes)
 
                 val iconScale by animateFloatAsState(
                     targetValue = if (isSelected) 1.15f else 1.0f,
@@ -87,7 +89,7 @@ fun CustomBottomNavigationBar(
                     ) {
                         Icon(
                             imageVector = screen.icon,
-                            contentDescription = screen.title,
+                            contentDescription = title,
                             tint = contentColor,
                             modifier = Modifier
                                 .size(24.dp)
@@ -107,7 +109,7 @@ fun CustomBottomNavigationBar(
                             Row {
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = screen.title,
+                                    text = title,
                                     color = contentColor,
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,

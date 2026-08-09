@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ferdi.deprem.model.Earthquake
 import com.ferdi.deprem.model.EarthquakeStatistics
 import com.ferdidrgn.anlikdepremler.core.datastore.PreferencesManager
+import com.ferdidrgn.anlikdepremler.core.network.NetworkMonitor
 import com.ferdidrgn.anlikdepremler.data.remote.EarthquakeSource
 import com.ferdidrgn.anlikdepremler.domain.usecase.*
 import com.ferdidrgn.anlikdepremler.ui.theme.AppThemeMode
@@ -34,7 +35,8 @@ class MainViewModel @Inject constructor(
     private val calculateStatisticsUseCase: CalculateStatisticsUseCase,
     private val saveUserPreferencesUseCase: SaveUserPreferencesUseCase,
     private val getUserPreferencesUseCase: GetUserPreferencesUseCase,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val networkMonitor: NetworkMonitor
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -47,6 +49,13 @@ class MainViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = false
     )
+
+    val isConnected: StateFlow<Boolean> = networkMonitor.isConnected
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = true
+        )
 
     init {
         observeUserPreferences()

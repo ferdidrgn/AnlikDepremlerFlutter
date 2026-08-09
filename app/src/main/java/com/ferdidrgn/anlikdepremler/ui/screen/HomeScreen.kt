@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -29,6 +30,7 @@ import coil.compose.AsyncImage
 import com.ferdi.deprem.model.Earthquake
 import com.ferdi.deprem.model.EarthquakeStatistics
 import com.ferdi.deprem.model.InfoCardItem
+import com.ferdidrgn.anlikdepremler.R
 import com.ferdidrgn.anlikdepremler.core.ads.BannerAdView
 import com.ferdidrgn.anlikdepremler.data.remote.EarthquakeSource
 import com.ferdidrgn.anlikdepremler.ui.components.NativeAdCard
@@ -117,7 +119,7 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // 10. Acil Durum Çantası Kontrolü
-        SectionTitle(title = "🎒 Acil Durum Çantası Kontrolü")
+        SectionTitle(title = stringResource(R.string.checklist_section_title))
         QuickChecklistCard()
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -139,11 +141,11 @@ fun HomeScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "🔄 Son Depremler (${uiState.earthquakes.size})",
+                text = stringResource(R.string.recent_earthquakes_title, uiState.earthquakes.size),
                 style = MaterialTheme.typography.titleLarge
             )
             TextButton(onClick = onSeeAllClick) {
-                Text("Tümünü Gör", color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.see_all), color = MaterialTheme.colorScheme.primary)
             }
         }
 
@@ -175,16 +177,16 @@ fun CreativeSourceSelector(
     onSourceSelected: (EarthquakeSource) -> Unit
 ) {
     val sources = listOf(
-        EarthquakeSource.KANDILLI to "Kandilli 🏢",
-        EarthquakeSource.AFAD to "AFAD 🚨",
-        EarthquakeSource.TURKEY_ALL to "Türkiye Karışık 🌐",
-        EarthquakeSource.USGS to "USGS Dünya 🌍",
-        EarthquakeSource.WORLD_IGP to "Dünya (IGP) 🌍"
+        EarthquakeSource.KANDILLI to stringResource(R.string.source_kandilli),
+        EarthquakeSource.AFAD to stringResource(R.string.source_afad),
+        EarthquakeSource.TURKEY_ALL to stringResource(R.string.source_turkey_all),
+        EarthquakeSource.USGS to stringResource(R.string.source_usgs),
+        EarthquakeSource.WORLD_IGP to stringResource(R.string.source_world_igp)
     )
 
     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
         Text(
-            text = "Deprem Veri Kaynağı",
+            text = stringResource(R.string.data_source_title),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 12.sp
@@ -245,7 +247,7 @@ fun LocationBasedEarthquakeCard(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Konuma Göre",
+                        text = stringResource(R.string.location_based_title),
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -256,7 +258,7 @@ fun LocationBasedEarthquakeCard(
                     modifier = Modifier.clickable { onSeeAllClick() }
                 ) {
                     Text(
-                        text = "Tümünü Gör",
+                        text = stringResource(R.string.see_all),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
@@ -265,7 +267,7 @@ fun LocationBasedEarthquakeCard(
             }
 
             Text(
-                text = "Bölgesel Deprem Analizi (Otomatik Arama)",
+                text = stringResource(R.string.location_based_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -276,7 +278,7 @@ fun LocationBasedEarthquakeCard(
                 value = rawInput,
                 onValueChange = onQueryChange,
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Şehir giriniz (Yazdıktan 3 sn sonra aranır...)") },
+                placeholder = { Text(stringResource(R.string.location_search_placeholder)) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 trailingIcon = {
                     if (isSearching) {
@@ -294,7 +296,7 @@ fun LocationBasedEarthquakeCard(
 
             if (earthquakes.isEmpty()) {
                 Text(
-                    text = "Aramanıza uygun deprem kaydı bulunamadı.",
+                    text = stringResource(R.string.location_no_result),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(vertical = 12.dp)
@@ -341,12 +343,12 @@ fun HeaderSection() {
     ) {
         Column {
             Text(
-                "Sarsıntı Takip",
+                stringResource(R.string.header_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                "Güvende Kalın 👋",
+                stringResource(R.string.header_title),
                 style = MaterialTheme.typography.displayLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -374,7 +376,7 @@ fun HeaderSection() {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    "CANLI VERİ",
+                    stringResource(R.string.live_data),
                     color = Color.White,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold
@@ -395,7 +397,7 @@ fun HeroBannerSection() {
     ) {
         AsyncImage(
             model = "https://picsum.photos/800/400?random=20",
-            contentDescription = "Deprem Hazırlığı",
+            contentDescription = stringResource(R.string.hero_guide_title),
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
@@ -418,7 +420,7 @@ fun HeroBannerSection() {
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    "ÖNEMLİ REHBER",
+                    stringResource(R.string.hero_guide_tag),
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
@@ -427,12 +429,12 @@ fun HeroBannerSection() {
             }
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                "Deprem Anında Yapılması Gerekenler",
+                stringResource(R.string.hero_guide_title),
                 color = Color.White,
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
-                "Hayat kurtaran 3 altın kuralı hemen inceleyin.",
+                stringResource(R.string.hero_guide_desc),
                 color = Color.LightGray,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -444,12 +446,12 @@ fun HeroBannerSection() {
 fun DailySummarySection(statistics: EarthquakeStatistics) {
     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
         Text(
-            text = "Günün Özeti",
+            text = stringResource(R.string.daily_summary_title),
             style = MaterialTheme.typography.displayLarge,
             color = MaterialTheme.colorScheme.onBackground
         )
         Text(
-            text = "Sismik Hareketlilik Raporu",
+            text = stringResource(R.string.daily_summary_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -494,7 +496,7 @@ fun DailySummarySection(statistics: EarthquakeStatistics) {
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = "Bugün Toplam",
+                        text = stringResource(R.string.total_today),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -535,7 +537,7 @@ fun DailySummarySection(statistics: EarthquakeStatistics) {
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = "En Yüksek",
+                        text = stringResource(R.string.highest),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -568,12 +570,12 @@ fun MapPreviewCard() {
                     .padding(20.dp)
             ) {
                 Text(
-                    text = "Deprem Haritası",
+                    text = stringResource(R.string.map_preview_title),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "Konum bazlı sismik inceleme",
+                    text = stringResource(R.string.map_preview_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -619,12 +621,12 @@ fun InformationTipsSliderSection() {
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
-                text = "Bilgi & İpuçları",
+                text = stringResource(R.string.info_tips_title),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = "Afet Bilinçlendirme Rehberi",
+                text = stringResource(R.string.info_tips_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -695,7 +697,7 @@ fun StatisticsSection(statistics: EarthquakeStatistics) {
             .padding(horizontal = 20.dp)
     ) {
         Text(
-            text = "📊 Detaylı İstatistikler",
+            text = stringResource(R.string.detailed_stats_title),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = 10.dp)
@@ -706,25 +708,25 @@ fun StatisticsSection(statistics: EarthquakeStatistics) {
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             StatCard(
-                title = "Bugün",
+                title = stringResource(R.string.stat_today),
                 value = statistics.totalToday.toString(),
-                subtitle = "deprem",
+                subtitle = stringResource(R.string.unit_earthquake),
                 color = MaterialTheme.colorScheme.primary,
                 icon = "🔴",
                 modifier = Modifier.weight(1f)
             )
             StatCard(
-                title = "Hafta",
+                title = stringResource(R.string.stat_week),
                 value = statistics.totalWeek.toString(),
-                subtitle = "deprem",
+                subtitle = stringResource(R.string.unit_earthquake),
                 color = MaterialTheme.colorScheme.secondary,
                 icon = "📅",
                 modifier = Modifier.weight(1f)
             )
             StatCard(
-                title = "Ay",
+                title = stringResource(R.string.stat_month),
                 value = statistics.totalMonth.toString(),
-                subtitle = "deprem",
+                subtitle = stringResource(R.string.unit_earthquake),
                 color = MaterialTheme.colorScheme.tertiary,
                 icon = "📆",
                 modifier = Modifier.weight(1f)
@@ -738,7 +740,7 @@ fun StatisticsSection(statistics: EarthquakeStatistics) {
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             StatCard(
-                title = "Ortalama",
+                title = stringResource(R.string.stat_avg),
                 value = String.format("%.1f", statistics.avgMagnitude),
                 subtitle = "Mw",
                 color = MaterialTheme.colorScheme.primary,
@@ -746,7 +748,7 @@ fun StatisticsSection(statistics: EarthquakeStatistics) {
                 modifier = Modifier.weight(1f)
             )
             StatCard(
-                title = "En Büyük",
+                title = stringResource(R.string.stat_max),
                 value = String.format("%.1f", statistics.maxMagnitude),
                 subtitle = "Mw",
                 color = MaterialTheme.colorScheme.error,
@@ -754,9 +756,9 @@ fun StatisticsSection(statistics: EarthquakeStatistics) {
                 modifier = Modifier.weight(1f)
             )
             StatCard(
-                title = "En Aktif",
+                title = stringResource(R.string.stat_active),
                 value = statistics.mostActiveRegion,
-                subtitle = "bölge",
+                subtitle = stringResource(R.string.unit_region),
                 color = MaterialTheme.colorScheme.secondary,
                 icon = "📍",
                 modifier = Modifier.weight(1f)
@@ -828,12 +830,12 @@ fun MagnitudeDistributionChart(statistics: EarthquakeStatistics) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "📈 Büyüklük Dağılımı",
+                    stringResource(R.string.chart_magnitude_title),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    "Son 24 Saat",
+                    stringResource(R.string.chart_last_24h),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -1000,7 +1002,7 @@ fun ExpandableEarthquakeCard(
                             modifier = Modifier.padding(top = 4.dp)
                         ) {
                             Text(
-                                text = "⚠️ ÖNEMLİ",
+                                text = stringResource(R.string.important_warning),
                                 color = MaterialTheme.colorScheme.error,
                                 fontSize = 9.sp,
                                 fontWeight = FontWeight.Bold,
@@ -1031,16 +1033,20 @@ fun ExpandableEarthquakeCard(
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         DetailItem(
-                            label = "Büyüklük",
+                            label = stringResource(R.string.label_magnitude),
                             value = String.format("%.1f", earthquake.magnitude),
                             unit = "Mw"
                         )
                         DetailItem(
-                            label = "Derinlik",
+                            label = stringResource(R.string.label_depth),
                             value = String.format("%.1f", earthquake.depth),
                             unit = "km"
                         )
-                        DetailItem(label = "Şiddet", value = earthquake.intensity, unit = "")
+                        DetailItem(
+                            label = stringResource(R.string.label_intensity),
+                            value = earthquake.intensity,
+                            unit = ""
+                        )
                     }
                 }
             }
@@ -1052,7 +1058,7 @@ fun ExpandableEarthquakeCard(
                     .padding(top = 4.dp)
             ) {
                 Text(
-                    text = if (isExpanded) "Daha Az" else "Daha Fazla",
+                    text = if (isExpanded) stringResource(R.string.show_less) else stringResource(R.string.show_more),
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 12.sp
                 )
@@ -1139,13 +1145,13 @@ fun QuickChecklistCard() {
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    "Su ve Konserve Gıda Hazır mı?",
+                    stringResource(R.string.checklist_item_food_title),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp
                 )
                 Text(
-                    "En az 3 günlük stok önerilir.",
+                    stringResource(R.string.checklist_item_food_desc),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                     fontSize = 11.sp
@@ -1167,11 +1173,11 @@ fun QuickFilters(
 ) {
     val filters = listOf("1s", "6s", "24s", "7g", "30g")
     val filterLabels = mapOf(
-        "1s" to "1 Saat",
-        "6s" to "6 Saat",
-        "24s" to "24 Saat",
-        "7g" to "7 Gün",
-        "30g" to "30 Gün"
+        "1s" to stringResource(R.string.filter_1h),
+        "6s" to stringResource(R.string.filter_6h),
+        "24s" to stringResource(R.string.filter_24h),
+        "7g" to stringResource(R.string.filter_7d),
+        "30g" to stringResource(R.string.filter_30d)
     )
 
     Row(

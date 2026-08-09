@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -49,7 +50,6 @@ fun SettingsScreen(
     val currentTheme by settingsViewModel.currentTheme.collectAsState()
 
     var showLanguageDialog by remember { mutableStateOf(false) }
-    var showThemeDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         settingsViewModel.eventFlow.collectLatest { event ->
@@ -81,8 +81,8 @@ fun SettingsScreen(
             modifier = Modifier.padding(bottom = 20.dp)
         )
 
-        // 1. TERCİHLER (DİL & 3 TEMA MODU)
-        SettingsCategoryTitle("TERCİHLER & GÖRÜNÜM")
+        // 1. TERCİHLER & GÖRÜNÜM
+        SettingsCategoryTitle(stringResource(R.string.category_preferences))
         SettingsCardContainer {
             ModernSettingsTile(
                 icon = Icons.Default.Language,
@@ -91,39 +91,36 @@ fun SettingsScreen(
                 valueText = "${currentLang.flag} ${currentLang.displayName}",
                 onClick = { showLanguageDialog = true }
             )
-            DividerLine()
-            // 🎨 3 Tema Seçeneği
-            ModernSettingsTile(
-                icon = Icons.Default.Palette,
-                iconBgColor = Color(0xFFE91E63),
-                title = "Uygulama Teması",
-                valueText = when (currentTheme) {
-                    AppThemeMode.CREAM_LIGHT -> "Krem Tema 🍦"
-                    AppThemeMode.SYSTEM_DYNAMIC -> "Sistem Rengi 📱"
-                    AppThemeMode.DARK_NIGHT -> "Koyu Gece 🌙"
-                },
-                onClick = { showThemeDialog = true }
-            )
         }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // MODERN DOKUNMATİK TEMA SEÇİCİ KART (SEGMENTED CONTROL)
+        ModernThemeSelectorCard(
+            currentTheme = currentTheme,
+            onThemeSelected = { newTheme ->
+                settingsViewModel.onThemeSelected(newTheme)
+            }
+        )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         // 2. BİLDİRİM VE İZİNLER
-        SettingsCategoryTitle("BİLDİRİMLER & İZİNLER")
+        SettingsCategoryTitle(stringResource(R.string.category_notifications))
         SettingsCardContainer {
             ModernSettingsTile(
                 icon = Icons.Default.Notifications,
                 iconBgColor = Color(0xFFFF9800),
-                title = "Bildirim Ayarları",
-                subtitle = "Deprem uyarısı tercihlerini yönetin",
+                title = stringResource(R.string.notification_settings),
+                subtitle = stringResource(R.string.notification_settings_sub),
                 onClick = { settingsViewModel.onNotificationSettingsClick() }
             )
             DividerLine()
             ModernSettingsTile(
                 icon = Icons.Default.LocationOn,
                 iconBgColor = Color(0xFF4CAF50),
-                title = "Konum İzinleri",
-                subtitle = "Yakındaki sarsıntıları görmek için gereklidir",
+                title = stringResource(R.string.location_permissions),
+                subtitle = stringResource(R.string.location_permissions_sub),
                 onClick = { settingsViewModel.onLocationSettingsClick() }
             )
         }
@@ -131,13 +128,13 @@ fun SettingsScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         // 3. DESTEK VE İLETİŞİM
-        SettingsCategoryTitle("DESTEK & TOPLULUK")
+        SettingsCategoryTitle(stringResource(R.string.category_support))
         SettingsCardContainer {
             ModernSettingsTile(
                 icon = Icons.Default.LocalCafe,
                 iconBgColor = Color(0xFF795548),
                 title = stringResource(R.string.buy_coffee),
-                subtitle = "Geliştiriciye destek olun",
+                subtitle = stringResource(R.string.buy_coffee_sub),
                 onClick = { settingsViewModel.onBuyCoffeeClick() }
             )
             DividerLine()
@@ -145,23 +142,23 @@ fun SettingsScreen(
                 icon = Icons.Default.Star,
                 iconBgColor = Color(0xFFFFC107),
                 title = stringResource(R.string.rate_app),
-                subtitle = "Google Play Store'da değerlendirin",
+                subtitle = stringResource(R.string.rate_app_sub),
                 onClick = { settingsViewModel.onRateAppClick() }
             )
             DividerLine()
             ModernSettingsTile(
                 icon = Icons.Default.Share,
                 iconBgColor = Color(0xFF9C27B0),
-                title = "Uygulamayı Paylaş",
-                subtitle = "Aileniz ve sevdiklerinizle paylaşın",
+                title = stringResource(R.string.share_app),
+                subtitle = stringResource(R.string.share_app_sub),
                 onClick = { settingsViewModel.onShareAppClick() }
             )
             DividerLine()
             ModernSettingsTile(
                 icon = Icons.Default.Email,
                 iconBgColor = Color(0xFF00BCD4),
-                title = "Geri Bildirim Gönder",
-                subtitle = "Hata ve önerilerinizi iletin",
+                title = stringResource(R.string.send_feedback),
+                subtitle = stringResource(R.string.send_feedback_sub),
                 onClick = { settingsViewModel.onFeedbackClick() }
             )
         }
@@ -169,32 +166,31 @@ fun SettingsScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         // 4. BİLGİ VE YASAL HAKLAR
-        SettingsCategoryTitle("YASAL & HAKKINDA")
+        SettingsCategoryTitle(stringResource(R.string.category_legal))
         SettingsCardContainer {
             ModernSettingsTile(
                 icon = Icons.Default.PrivacyTip,
                 iconBgColor = Color(0xFF607D8B),
-                title = "Gizlilik Politikası",
-                subtitle = "Firebase verileri ve gizlilik metni",
+                title = stringResource(R.string.privacy_policy),
+                subtitle = stringResource(R.string.privacy_policy_sub),
                 onClick = { onOpenLegalDocument("privacy_policy") }
             )
             DividerLine()
             ModernSettingsTile(
                 icon = Icons.Default.Gavel,
                 iconBgColor = Color(0xFF3F51B5),
-                title = "Kullanıcı Sözleşmesi",
-                subtitle = "Kullanım şartları ve koşullar",
+                title = stringResource(R.string.terms_conditions),
+                subtitle = stringResource(R.string.terms_conditions_sub),
                 onClick = { onOpenLegalDocument("terms_and_conditions") }
             )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 💰 KART İÇİ NATIVE REKLAM
         NativeAdCard()
     }
 
-    // 🌐 DİL SEÇİM POPUP
+    // DİL SEÇİM POPUP
     if (showLanguageDialog) {
         AlertDialog(
             onDismissRequest = { showLanguageDialog = false },
@@ -240,59 +236,83 @@ fun SettingsScreen(
             },
             confirmButton = {},
             dismissButton = {
-                TextButton(onClick = { showLanguageDialog = false }) { Text("İptal") }
+                TextButton(onClick = { showLanguageDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
             }
         )
     }
+}
 
-    // 🎨 TEMA SEÇİM POPUP (CREAM, SYSTEM, DARK NIGHT)
-    if (showThemeDialog) {
-        AlertDialog(
-            onDismissRequest = { showThemeDialog = false },
-            title = { Text(text = "Uygulama Teması Seçin", fontWeight = FontWeight.Bold) },
-            text = {
-                Column {
+@Composable
+fun ModernThemeSelectorCard(
+    currentTheme: AppThemeMode,
+    onThemeSelected: (AppThemeMode) -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = stringResource(R.string.app_theme),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     val themes = listOf(
-                        AppThemeMode.CREAM_LIGHT to "Krem Tema 🍦",
-                        AppThemeMode.SYSTEM_DYNAMIC to "Sistem Rengi 📱",
-                        AppThemeMode.DARK_NIGHT to "Koyu Gece 🌙"
+                        AppThemeMode.CREAM_LIGHT to stringResource(R.string.theme_cream),
+                        AppThemeMode.SYSTEM_DYNAMIC to stringResource(R.string.theme_system),
+                        AppThemeMode.DARK_NIGHT to stringResource(R.string.theme_dark)
                     )
 
                     themes.forEach { (mode, label) ->
-                        val isSelected = mode == currentTheme
-                        Row(
+                        val isSelected = currentTheme == mode
+                        val bgColor by animateColorAsState(
+                            targetValue = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+                            label = "themeBg"
+                        )
+                        val textColor by animateColorAsState(
+                            targetValue = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            label = "themeText"
+                        )
+
+                        Surface(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
-                                .clickable {
-                                    settingsViewModel.onThemeSelected(mode)
-                                    showThemeDialog = false
-                                }
-                                .padding(12.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                                .weight(1f)
+                                .height(40.dp)
+                                .clickable { onThemeSelected(mode) },
+                            shape = RoundedCornerShape(12.dp),
+                            color = bgColor
                         ) {
-                            Text(
-                                label,
-                                modifier = Modifier.weight(1f),
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                            )
-                            if (isSelected) {
-                                Icon(
-                                    Icons.Default.Check,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
+                            Box(contentAlignment = Alignment.Center) {
+                                Text(
+                                    text = label,
+                                    color = textColor,
+                                    fontSize = 11.sp,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                                 )
                             }
                         }
                     }
                 }
-            },
-            confirmButton = {},
-            dismissButton = {
-                TextButton(onClick = { showThemeDialog = false }) { Text("İptal") }
             }
-        )
+        }
     }
 }
 
@@ -408,8 +428,11 @@ private fun launchSmartAppReview(context: Context, activity: Activity?) {
             val reviewInfo = task.result
             val flow = manager.launchReviewFlow(activity, reviewInfo)
             flow.addOnCompleteListener {
-                Toast.makeText(context, "Değerlendirmeniz için teşekkürler!", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.thanks_for_rating),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         } else {
             openPlayStore(context)
@@ -439,9 +462,9 @@ private fun openPlayStore(context: Context) {
 private fun sendEmailIntent(context: Context, email: String) {
     val intent = Intent(Intent.ACTION_SENDTO).apply {
         data = Uri.parse("mailto:$email")
-        putExtra(Intent.EXTRA_SUBJECT, "Anlık Depremler İletişim")
+        putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.app_name))
     }
-    context.startActivity(Intent.createChooser(intent, "E-posta Gönder"))
+    context.startActivity(Intent.createChooser(intent, null))
 }
 
 private fun openNotificationSettings(context: Context) {
@@ -469,7 +492,7 @@ private fun shareApp(context: Context) {
     val sendIntent = Intent(Intent.ACTION_SEND).apply {
         putExtra(
             Intent.EXTRA_TEXT,
-            "Anlık Depremler Uygulaması: https://play.google.com/store/apps/details?id=${context.packageName}"
+            "${context.getString(R.string.app_name)}: https://play.google.com/store/apps/details?id=${context.packageName}"
         )
         type = "text/plain"
     }
@@ -548,7 +571,7 @@ private fun consumeCoffeePurchase(
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
             Toast.makeText(
                 context,
-                "☕ Destek olduğunuz ve kahve ısmarladığınız için teşekkürler!",
+                context.getString(R.string.thanks_for_coffee),
                 Toast.LENGTH_LONG
             ).show()
         }

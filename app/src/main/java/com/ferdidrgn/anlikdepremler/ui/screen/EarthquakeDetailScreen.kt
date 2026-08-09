@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.ToneGenerator
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -18,15 +17,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ferdi.deprem.model.Earthquake
+import com.ferdidrgn.anlikdepremler.R
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -105,7 +105,7 @@ fun EarthquakeDetailScreen(
                     .padding(16.dp)
                     .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f), CircleShape)
             ) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Geri")
+                Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
             }
         }
 
@@ -120,7 +120,6 @@ fun EarthquakeDetailScreen(
                     modifier = Modifier.padding(14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Modelindeki Görsel (cityImageUrl)
                     AsyncImage(
                         model = earthquake.cityImageUrl,
                         contentDescription = null,
@@ -165,26 +164,26 @@ fun EarthquakeDetailScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 3. MODELDEKİ ALANLAR (Derinlik, Şiddet/Intensity, Kaynak)
+            // 3. MODELDEKİ ALANLAR
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 DetailInfoTile(
                     modifier = Modifier.weight(1f),
-                    title = "Derinlik",
+                    title = stringResource(R.string.label_depth),
                     value = "${earthquake.depth} km",
                     icon = Icons.Default.Layers
                 )
                 DetailInfoTile(
                     modifier = Modifier.weight(1f),
-                    title = "Hissedilen Şiddet",
-                    value = "Mercalli ${earthquake.intensity}", // Modeldeki intensity
+                    title = stringResource(R.string.label_perceived_intensity),
+                    value = "Mercalli ${earthquake.intensity}",
                     icon = Icons.Default.GraphicEq
                 )
                 DetailInfoTile(
                     modifier = Modifier.weight(1f),
-                    title = "Kaynak",
+                    title = stringResource(R.string.label_source),
                     value = earthquake.source,
                     icon = Icons.Default.Sensors
                 )
@@ -207,12 +206,12 @@ fun EarthquakeDetailScreen(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Acil Durum Düdüğü",
+                            text = stringResource(R.string.whistle_title),
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
                         Text(
-                            text = "Arama kurtarma ikaz sireni çalar",
+                            text = stringResource(R.string.whistle_desc),
                             fontSize = 11.sp,
                             color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.8f)
                         )
@@ -224,14 +223,14 @@ fun EarthquakeDetailScreen(
                             containerColor = if (isWhistleBlowing) Color.Black else MaterialTheme.colorScheme.error
                         )
                     ) {
-                        Text(if (isWhistleBlowing) "DURDUR" else "ÇAL 🔊")
+                        Text(if (isWhistleBlowing) stringResource(R.string.whistle_stop) else stringResource(R.string.whistle_start))
                     }
                 }
             }
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // 5. PAYLAŞ BUTONU (anlikdepremler.com DeepLink formatlı)
+            // 5. PAYLAŞ BUTONU
             OutlinedButton(
                 onClick = { shareEarthquakeDetail(context, earthquake) },
                 modifier = Modifier.fillMaxWidth(),
@@ -239,7 +238,7 @@ fun EarthquakeDetailScreen(
             ) {
                 Icon(Icons.Default.Share, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Deprem Bilgisini Paylaş")
+                Text(stringResource(R.string.share_earthquake_info))
             }
         }
     }
@@ -275,16 +274,20 @@ private fun DetailInfoTile(
 }
 
 private fun shareEarthquakeDetail(context: Context, earthquake: Earthquake) {
-    val text = "🚨 DEPREM BİLDİRİMİ\n\n" +
-            "📍 Konum: ${earthquake.location} (${earthquake.region})\n" +
-            "💥 Büyüklük: ${earthquake.magnitude} Mw\n" +
-            "📏 Derinlik: ${earthquake.depth} km\n" +
-            "🕒 Zaman: ${earthquake.date} - ${earthquake.time}\n\n" +
-            "Detaylar için Anlık Depremler uygulamasını açın: https://anlikdepremler.com/earthquake/${earthquake.id}"
+    val text = context.getString(
+        R.string.share_template,
+        earthquake.location,
+        earthquake.region,
+        earthquake.magnitude,
+        earthquake.depth,
+        earthquake.date,
+        earthquake.time,
+        earthquake.id
+    )
 
     val intent = Intent(Intent.ACTION_SEND).apply {
         putExtra(Intent.EXTRA_TEXT, text)
         type = "text/plain"
     }
-    context.startActivity(Intent.createChooser(intent, "Deprem Bilgisini Paylaş"))
+    context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_earthquake_info)))
 }

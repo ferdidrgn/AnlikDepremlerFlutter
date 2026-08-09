@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ferdidrgn.anlikdepremler.core.datastore.PreferencesManager
 import com.ferdidrgn.anlikdepremler.core.language.AppLanguage
+import com.ferdidrgn.anlikdepremler.core.language.LocaleHelper
 import com.ferdidrgn.anlikdepremler.core.util.LocaleUtils
 import com.ferdidrgn.anlikdepremler.ui.theme.AppThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,9 +48,11 @@ class SettingsViewModel @Inject constructor(
     // 📌 Dil Seçimi (Arayüzü Anında Yeniler)
     fun onLanguageSelected(context: Context, language: AppLanguage) {
         viewModelScope.launch {
-            LocaleUtils.setAppLanguage(language.code)
+            // 1. DataStore'a kaydet
             preferencesManager.saveSelectedLanguage(language.code)
-            (context as? Activity)?.recreate()
+
+            // 2. Android Sistemine Dili Bildir (Activity Recreate YAPTIRMAZ, Compose Re-composition tetikler)
+            LocaleUtils.setAppLanguage(language.code)
         }
     }
 
