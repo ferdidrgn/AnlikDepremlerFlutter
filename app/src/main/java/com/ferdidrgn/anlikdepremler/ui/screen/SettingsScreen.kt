@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.billingclient.api.*
 import com.ferdidrgn.anlikdepremler.R
+import com.ferdidrgn.anlikdepremler.core.ads.BannerAdView
 import com.ferdidrgn.anlikdepremler.core.language.AppLanguage
 import com.ferdidrgn.anlikdepremler.ui.components.NativeAdCard
 import com.ferdidrgn.anlikdepremler.ui.theme.AppThemeMode
@@ -125,7 +126,12 @@ fun SettingsScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // 🎯 1. REKLAM ALANI: İZİNLER İLE DESTEK ARASINDAKİ BANNER BANTI
+        BannerAdView(modifier = Modifier.fillMaxWidth())
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         // 3. DESTEK VE İLETİŞİM
         SettingsCategoryTitle(stringResource(R.string.category_support))
@@ -185,9 +191,15 @@ fun SettingsScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
+        // 🎯 2. REKLAM ALANI: SAYFA ALTI NATIVE KART REKLAMI
         NativeAdCard()
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // 🎯 3. REKLAM ALANI: EN ALT BANNER REKLAM BANTI
+        BannerAdView(modifier = Modifier.fillMaxWidth())
     }
 
     // DİL SEÇİM POPUP
@@ -232,6 +244,10 @@ fun SettingsScreen(
                             }
                         }
                     }
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // 🎯 4. REKLAM ALANI: DIALOG İÇİ ALT BANNER REKLAMI
+                    BannerAdView(modifier = Modifier.fillMaxWidth())
                 }
             },
             confirmButton = {},

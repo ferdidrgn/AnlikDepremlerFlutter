@@ -1,10 +1,8 @@
 package com.ferdidrgn.anlikdepremler.ui.screen
 
-import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -18,11 +16,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ferdi.deprem.model.Earthquake
 import com.ferdidrgn.anlikdepremler.R
+import com.ferdidrgn.anlikdepremler.core.ads.BannerAdView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -94,6 +90,7 @@ fun MapScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
+        // 1. GOOGLE MAPS & HARİTA PİNLERİ
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
@@ -124,6 +121,7 @@ fun MapScreen(
             )
         }
 
+        // 2. ÜST YÜZEN PANEL (ARAMA ÇUBUĞU + ARAMA ALTI BANNER REKLAM)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -185,8 +183,14 @@ fun MapScreen(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // 🎯 HARİTA ÜST REKLAM BANTI
+            BannerAdView(modifier = Modifier.fillMaxWidth())
         }
 
+        // 3. ALT DEPREM KARTLARI CAROUSEL LİSTESİ
         if (mapList.isNotEmpty()) {
             LazyRow(
                 state = lazyListState,

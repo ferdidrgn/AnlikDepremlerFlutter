@@ -38,10 +38,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Edge to Edge aktif
         enableEdgeToEdge()
 
         setContent {
@@ -52,25 +52,26 @@ class MainActivity : ComponentActivity() {
             var isSplashActive by remember { mutableStateOf(true) }
 
             DepremTheme(themeMode = uiState.currentTheme) {
-                // 🛠️ PEMBE STATUS BAR ÇÖZÜMÜ:
                 val systemUiController = rememberSystemUiController()
                 val useDarkIcons = !isSystemInDarkTheme()
                 val statusBarColor = MaterialTheme.colorScheme.background
 
                 DisposableEffect(systemUiController, useDarkIcons, statusBarColor) {
                     systemUiController.setStatusBarColor(
-                        color = Color.Transparent, // Veya statusBarColor
+                        color = Color.Transparent,
                         darkIcons = useDarkIcons
                     )
                     onDispose {}
                 }
 
                 Box(modifier = Modifier.fillMaxSize()) {
-                    if (isSplashActive)
+                    if (isSplashActive) {
                         SplashScreen(onSplashFinished = { isSplashActive = false })
-                    else if (!isOnboardingCompleted)
+                    } else if (!isOnboardingCompleted) {
                         OnboardingScreen(onFinishOnboarding = { mainViewModel.completeOnboarding() })
-                    else MainAppScreen(mainViewModel = mainViewModel)
+                    } else {
+                        MainAppScreen(mainViewModel = mainViewModel)
+                    }
                 }
             }
         }
@@ -87,14 +88,12 @@ fun MainAppScreen(mainViewModel: MainViewModel) {
 
     Scaffold(
         topBar = {
-            // 🚨 İnternet gittiğinde en üstten kayarak kırmızı banner çıkar
             OfflineBanner(isConnected = isConnected)
         },
         bottomBar = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
 
-            // Detay veya Yasal metin ekranlarındayken alt gezinti barı gizlenir
             val shouldShowBottomBar = currentRoute != null &&
                     !currentRoute.startsWith("detail/") &&
                     !currentRoute.startsWith("legal/")

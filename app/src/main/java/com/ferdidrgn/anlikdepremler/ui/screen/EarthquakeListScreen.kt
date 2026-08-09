@@ -30,6 +30,7 @@ import com.ferdidrgn.anlikdepremler.R
 import com.ferdidrgn.anlikdepremler.data.remote.EarthquakeSource
 import com.ferdidrgn.anlikdepremler.ui.components.NativeAdCard
 import com.ferdidrgn.anlikdepremler.ui.screen.MainViewModel
+import com.ferdidrgn.anlikdepremler.ui.util.shouldShowAdAtIndex
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -188,7 +189,8 @@ fun EarthquakeListScreen(
                     onClick = { onEarthquakeClick(eq) }
                 )
 
-                if ((index + 1) % 10 == 0) {
+                // 🎯 DİNAMİK REKLAM KOŞULU (5 veya 10 İtemda Bir Native/Banner Reklam)
+                if (shouldShowAdAtIndex(index, filteredList.size)) {
                     Spacer(modifier = Modifier.height(4.dp))
                     NativeAdCard()
                     Spacer(modifier = Modifier.height(4.dp))

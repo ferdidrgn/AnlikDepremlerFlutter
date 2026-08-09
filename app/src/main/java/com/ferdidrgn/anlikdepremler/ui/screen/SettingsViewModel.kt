@@ -51,8 +51,15 @@ class SettingsViewModel @Inject constructor(
             // 1. DataStore'a kaydet
             preferencesManager.saveSelectedLanguage(language.code)
 
-            // 2. Android Sistemine Dili Bildir (Activity Recreate YAPTIRMAZ, Compose Re-composition tetikler)
-            LocaleUtils.setAppLanguage(language.code)
+            // 2. Dil konfigürasyonunu uygula
+            LocaleHelper.setAppLanguage(context, language.code)
+
+            // 3. Android 7-12 cihazlarda ekranın anında yeni dille açılması için Activity'yi yeniden başlat
+            (context as? Activity)?.let { activity ->
+                activity.finish()
+                activity.startActivity(activity.intent)
+                activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            }
         }
     }
 

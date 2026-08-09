@@ -61,6 +61,10 @@ fun HomeScreen(
             onSourceSelected = { viewModel.onSourceChanged(it) }
         )
 
+        BannerAdView(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp))
+
         Spacer(modifier = Modifier.height(12.dp))
 
         if (uiState.isLoading) {
@@ -158,9 +162,7 @@ fun HomeScreen(
                     earthquake = eq,
                     onClick = { onEarthquakeClick(eq) }
                 )
-                if (index == 2) {
-                    NativeAdCard()
-                }
+                if (index == 2) NativeAdCard()
             }
         }
 
