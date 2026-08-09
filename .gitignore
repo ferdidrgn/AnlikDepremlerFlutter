@@ -29,6 +29,7 @@ local.properties
 *.jks
 *.keystore
 *.pepk
+keystore.properties
 
 # Log files
 *.log
