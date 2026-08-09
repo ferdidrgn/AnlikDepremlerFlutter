@@ -22,6 +22,7 @@ import com.ferdidrgn.anlikdepremler.navigation.Screen
 import com.ferdidrgn.anlikdepremler.ui.components.CustomBottomNavigationBar
 import com.ferdidrgn.anlikdepremler.ui.screen.EarthquakeDetailScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.HomeScreen
+import com.ferdidrgn.anlikdepremler.ui.screen.LegalDocumentScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.MainViewModel
 import com.ferdidrgn.anlikdepremler.ui.screen.MapScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.OnboardingScreen
@@ -66,8 +67,12 @@ fun MainAppScreen(mainViewModel: MainViewModel) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
 
-            // Detay ekranına geçildiğinde bottom bar gizlenir
-            if (currentRoute != null && !currentRoute.startsWith("detail/")) {
+            // Detay veya Yasal metin ekranlarındayken alt gezinti barı gizlenir
+            val shouldShowBottomBar = currentRoute != null &&
+                    !currentRoute.startsWith("detail/") &&
+                    !currentRoute.startsWith("legal/")
+
+            if (shouldShowBottomBar) {
                 CustomBottomNavigationBar(
                     currentRoute = currentRoute,
                     onNavItemClick = { screen ->
@@ -111,15 +116,23 @@ fun MainAppScreen(mainViewModel: MainViewModel) {
 
             // 3. HARİTA EKRANI
             composable(Screen.Map.route) {
-                MapScreen(viewModel = mainViewModel)
+                MapScreen(
+                    viewModel = mainViewModel,
+                    onBackClick = { navController.popBackStack() }
+                )
             }
 
             // 4. AYARLAR EKRANI
             composable(Screen.Settings.route) {
-                SettingsScreen(settingsViewModel = hiltViewModel())
+                SettingsScreen(
+                    settingsViewModel = hiltViewModel(),
+                    onOpenLegalDocument = { docType ->
+                        navController.navigate("legal/$docType")
+                    }
+                )
             }
 
-            // 5. DEPREM DETAY EKRANI (Deeplink Eklenmiş Hali)
+            // 5. DEPREM DETAY EKRANI (Deeplink Destekli)
             composable(
                 route = "detail/{earthquakeId}",
                 arguments = listOf(navArgument("earthquakeId") { type = NavType.StringType }),
@@ -134,6 +147,15 @@ fun MainAppScreen(mainViewModel: MainViewModel) {
                         onBackClick = { navController.popBackStack() }
                     )
                 }
+            }
+
+            // 6. FIREBASE DİNAMİK YASAL METİNLER EKRANI
+            composable("legal/{docType}") { backStackEntry ->
+                val docType = backStackEntry.arguments?.getString("docType") ?: "privacy_policy"
+                LegalDocumentScreen(
+                    documentType = docType,
+                    onBackClick = { navController.popBackStack() }
+                )
             }
         }
     }

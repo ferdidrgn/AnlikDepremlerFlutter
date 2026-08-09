@@ -1,0 +1,149 @@
+package com.ferdidrgn.anlikdepremler.ui.screen
+
+import android.widget.TextView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Gavel
+import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.text.HtmlCompat
+import com.google.firebase.firestore.FirebaseFirestore
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LegalDocumentScreen(
+    documentType: String,
+    onBackClick: () -> Unit
+) {
+    var htmlContent by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(true) }
+
+    // API 24 Uyumlu String Karşılaştırması
+    val isPrivacy = documentType.equals("privacy_policy", ignoreCase = true)
+    val title = if (isPrivacy) "Gizlilik Politikası" else "Kullanım Koşulları"
+
+    LaunchedEffect(documentType) {
+        // Doğrudan Java/Kotlin standart Firestore instance kullanımı (Import hatası yapmaz)
+        FirebaseFirestore.getInstance()
+            .collection("AppTools")
+            .orderBy(documentType)
+            .addSnapshotListener { snapshot, error ->
+                isLoading = false
+                if (error == null && snapshot != null && !snapshot.isEmpty) {
+                    htmlContent = snapshot.documents.firstOrNull()?.getString(documentType) ?: ""
+                }
+            }
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(title, fontWeight = FontWeight.Bold, fontSize = 18.sp) },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Geri")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.primaryContainer,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = if (isPrivacy) Icons.Default.Shield else Icons.Default.Gavel,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = if (isPrivacy) "Veri Güvenliğiniz Bizim İçin Önemli" else "Kullanım Şartları & Kurallar",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                        Text(
+                            text = "Son Güncelleme: 2026",
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Box(
+                    modifier = Modifier.padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.padding(24.dp))
+                    } else if (htmlContent.isEmpty()) {
+                        Text(
+                            "Metin yüklenemedi. Lütfen internet bağlantınızı kontrol edin.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    } else {
+                        val textColor = MaterialTheme.colorScheme.onSurface.toArgb()
+
+                        AndroidView(
+                            factory = { context ->
+                                TextView(context).apply {
+                                    setTextColor(textColor)
+                                    textSize = 14f
+                                    setLineSpacing(6f, 1.1f)
+                                }
+                            },
+                            update = { textView ->
+                                textView.text = HtmlCompat.fromHtml(
+                                    htmlContent,
+                                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(30.dp))
+        }
+    }
+}

@@ -115,10 +115,17 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
 
+    // 📌 Firebase BoM (Bill of Materials) - Sürüm yönetimini BoM yapar
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+
+    // 📌 Sadece ana kütüphaneler (firebase-common-ktx BURADAN TEMİZLENDİ)
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-analytics")
+
     // --- 📢 Google AdMob (Mobil Reklamlar) ---
     implementation("com.google.android.gms:play-services-ads:23.3.0")
 
-    // --- 🛒 Google Play Billing (Uygulama İçi Satın Alma & Abonelikler) ---
+    // --- 🛒 Google Play Billing ---
     implementation("com.android.billingclient:billing-ktx:7.0.0")
 
     // 🌟 Google Play In-App Review Kütüphanesi
@@ -148,7 +155,6 @@ dependencies {
 
     // --- System UI Controller ---
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
-
 
     // 🗺️ Maps Compose & Clustering
     implementation("com.google.maps.android:maps-compose:4.3.3")
