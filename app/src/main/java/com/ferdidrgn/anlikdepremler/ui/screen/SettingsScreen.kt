@@ -89,6 +89,8 @@ fun SettingsScreen(
                 icon = Icons.Default.Language,
                 iconBgColor = Color(0xFF2196F3),
                 title = stringResource(R.string.select_language),
+                // 🎯 Kaç adet dil destekleniyorsa dinamik olarak sayısını başlığın yanına/soluna rozet olarak basıyoruz
+                badgeText = "${AppLanguage.entries.size}",
                 valueText = "${currentLang.flag} ${currentLang.displayName}",
                 onClick = { showLanguageDialog = true }
             )
@@ -213,7 +215,13 @@ fun SettingsScreen(
                 )
             },
             text = {
-                Column {
+                // 🎯 Scroll edilebilir alan ve yükseklik kısıtlaması
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 400.dp) // Sığmayan diller için dikey kaydırma alanı
+                        .verticalScroll(rememberScrollState())
+                ) {
                     AppLanguage.values().forEach { language ->
                         val isSelected = language == currentLang
                         Row(
@@ -246,7 +254,7 @@ fun SettingsScreen(
                     }
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // 🎯 4. REKLAM ALANI: DIALOG İÇİ ALT BANNER REKLAMI
+                    // DIALOG ALT REKLAMI
                     BannerAdView(modifier = Modifier.fillMaxWidth())
                 }
             },
@@ -363,6 +371,7 @@ private fun ModernSettingsTile(
     icon: ImageVector,
     iconBgColor: Color,
     title: String,
+    badgeText: String? = null,
     subtitle: String? = null,
     valueText: String? = null,
     onClick: () -> Unit
@@ -374,6 +383,7 @@ private fun ModernSettingsTile(
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // İKON
         Box(
             modifier = Modifier
                 .size(38.dp)
@@ -389,8 +399,26 @@ private fun ModernSettingsTile(
             )
         }
 
-        Spacer(modifier = Modifier.width(14.dp))
+        Spacer(modifier = Modifier.width(12.dp))
 
+        // 🎯 DİL SAYISI ROZETİ (Sayı varsa ikondan hemen sonra, başlığın en solunda görünür)
+        if (badgeText != null) {
+            Surface(
+                shape = RoundedCornerShape(8.dp),
+                color = MaterialTheme.colorScheme.primaryContainer,
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                Text(
+                    text = badgeText,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                )
+            }
+        }
+
+        // BAŞLIK VE ALT BAŞLIK
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
@@ -407,6 +435,7 @@ private fun ModernSettingsTile(
             }
         }
 
+        // SAĞDAKİ DEĞER (Seçili Dil: 🇹🇷 Türkçe)
         if (valueText != null) {
             Text(
                 text = valueText,

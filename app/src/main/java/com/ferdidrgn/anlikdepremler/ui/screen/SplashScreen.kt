@@ -1,11 +1,6 @@
 package com.ferdidrgn.anlikdepremler.ui.screen
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -18,16 +13,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ferdidrgn.anlikdepremler.R
+import com.ferdidrgn.anlikdepremler.core.ads.BannerAdView
+import com.ferdidrgn.anlikdepremler.core.util.getAppVersionName
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(onSplashFinished: () -> Unit) {
+    val context = LocalContext.current
+    val versionText = remember(context) { getAppVersionName(context) }
     var startAnimation by remember { mutableStateOf(false) }
 
     val scale = animateFloatAsState(
@@ -62,7 +61,7 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
 
     LaunchedEffect(key1 = true) {
         startAnimation = true
-        delay(2200)
+        delay(2500)
         onSplashFinished()
     }
 
@@ -77,16 +76,19 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
                         MaterialTheme.colorScheme.background
                     )
                 )
-            ),
+            )
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
+        // 1. ANİMASYONLU ORTA ALAN
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .scale(scale.value)
                 .fillMaxHeight()
-                .padding(32.dp)
+                .padding(horizontal = 32.dp)
         ) {
             Spacer(modifier = Modifier.weight(1f))
 
@@ -138,23 +140,36 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
             )
 
             Spacer(modifier = Modifier.weight(1f))
+        }
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(bottom = 24.dp)
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    color = MaterialTheme.colorScheme.primary,
-                    strokeWidth = 2.dp
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = stringResource(R.string.version_text),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                )
-            }
+        // 2. EN ALT YÜKLENİYOR + DİNAMİK VERSİYON + REKLAM ALANI
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(22.dp),
+                color = MaterialTheme.colorScheme.primary,
+                strokeWidth = 2.dp
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = versionText,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // 🎯 EN ALT BANNER REKLAMI
+            BannerAdView(
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
