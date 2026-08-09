@@ -1,9 +1,12 @@
 package com.ferdi.deprem.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,35 +25,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ferdi.deprem.model.Earthquake
+import com.ferdidrgn.anlikdepremler.data.remote.EarthquakeSource
 import com.ferdidrgn.anlikdepremler.ui.components.NativeAdCard
-
-enum class EarthquakeSourceFilter(val displayName: String) {
-    ALL("Tümü"),
-    AFAD("AFAD"),
-    KANDILLI("Kandilli")
-}
+import com.ferdidrgn.anlikdepremler.ui.screen.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EarthquakeListScreen(
-    earthquakes: List<Earthquake>,
-    isLoading: Boolean = false,
+    viewModel: MainViewModel,
     onEarthquakeClick: (Earthquake) -> Unit = {}
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
     var minMagnitudeFilter by remember { mutableStateOf(0.0) }
-    var selectedSource by remember { mutableStateOf(EarthquakeSourceFilter.ALL) }
 
-    val filteredList = earthquakes.filter { eq ->
+    // Arama ve Büyüklük Filtreleme
+    val filteredList = uiState.earthquakes.filter { eq ->
         val matchesQuery = eq.location.contains(searchQuery, ignoreCase = true) ||
                 eq.region.contains(searchQuery, ignoreCase = true)
         val matchesMag = eq.magnitude >= minMagnitudeFilter
-        val matchesSource = when (selectedSource) {
-            EarthquakeSourceFilter.ALL -> true
-            EarthquakeSourceFilter.AFAD -> eq.source.contains("AFAD", ignoreCase = true)
-            EarthquakeSourceFilter.KANDILLI -> eq.source.contains("Kandilli", ignoreCase = true)
-        }
-        matchesQuery && matchesMag && matchesSource
+        matchesQuery && matchesMag
     }
 
     Column(
@@ -61,6 +55,7 @@ fun EarthquakeListScreen(
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
+        // 1. Üst Başlık & Kayıt Sayısı
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -93,6 +88,40 @@ fun EarthquakeListScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        // 2. DİNAMİK API KAYNAK SEÇİCİ (Kandilli, AFAD, Orhan Aydoğdu, USGS)
+        val sources = listOf(
+            EarthquakeSource.KANDILLI to "Kandilli 🏢",
+            EarthquakeSource.AFAD to "AFAD 🚨",
+            EarthquakeSource.TURKEY_ALL to "Orhan Aydoğdu 🌐",
+            EarthquakeSource.USGS to "USGS Dünya 🌍"
+        )
+
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(sources) { (source, label) ->
+                val isSelected = uiState.selectedSource == source
+                Surface(
+                    onClick = { viewModel.onSourceChanged(source) },
+                    shape = RoundedCornerShape(14.dp),
+                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                    contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                    border = if (!isSelected) BorderStroke(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    ) else null
+                ) {
+                    Text(
+                        text = label,
+                        fontSize = 12.sp,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // 3. Arama Çubuğu
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
@@ -109,32 +138,9 @@ fun EarthquakeListScreen(
             shape = RoundedCornerShape(18.dp)
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // Kaynak Filtresi (AFAD / Kandilli / Tümü)
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            EarthquakeSourceFilter.values().forEach { sourceFilter ->
-                FilterChip(
-                    selected = selectedSource == sourceFilter,
-                    onClick = { selectedSource = sourceFilter },
-                    label = {
-                        Text(
-                            sourceFilter.displayName,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp
-                        )
-                    },
-                    shape = RoundedCornerShape(12.dp)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(6.dp))
-
-        // Büyüklük Filtresi
+        // 4. Büyüklük Filtreleri
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -150,13 +156,14 @@ fun EarthquakeListScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-        if (isLoading) {
+        if (uiState.isLoading) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             Spacer(modifier = Modifier.height(8.dp))
         }
 
+        // 5. DEPREM LİSTESİ (Modelin Kendi Görseli İle)
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             contentPadding = PaddingValues(bottom = 90.dp)
@@ -206,12 +213,12 @@ fun PremiumEarthquakeCard(
                 .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Görsel Destekli Kart Resmi
+            // 🏙️ ESKİ TEMİZ GÖRSEL LİNKİ (Modeldeki cityImageUrl)
             AsyncImage(
-                model = earthquake.cityImageUrl,
-                contentDescription = null,
+                model = earthquake.cityImageUrl.ifEmpty { "https://picsum.photos/400/250?random=${earthquake.id}" },
+                contentDescription = earthquake.location,
                 modifier = Modifier
-                    .size(54.dp)
+                    .size(56.dp)
                     .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Crop
             )
@@ -227,6 +234,7 @@ fun PremiumEarthquakeCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = "${earthquake.region} • ${earthquake.date} ${earthquake.time}",
                     style = MaterialTheme.typography.bodyMedium,

@@ -17,7 +17,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -26,9 +28,9 @@ import com.ferdi.deprem.model.Earthquake
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.clustering.ClusterItem
 import com.google.maps.android.compose.*
 import com.google.maps.android.compose.clustering.Clustering
-import com.google.maps.android.clustering.ClusterItem
 import kotlinx.coroutines.launch
 
 // 📌 Map Cluster Item Yapısı
@@ -41,11 +43,13 @@ data class EarthquakeMapItem(
     override fun getZIndex(): Float? = 0f
 }
 
+@OptIn(MapsComposeExperimentalApi::class)
 @Composable
 fun MapScreen(
     viewModel: MainViewModel,
     onBackClick: () -> Unit = {}
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -90,7 +94,7 @@ fun MapScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // 1. GOOGLE MAPS COMPOSER & CLUSTERING
+        // 1. GOOGLE MAPS COMPOSER & CUSTOM CLUSTER MARKERS
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
@@ -101,6 +105,14 @@ fun MapScreen(
         ) {
             Clustering(
                 items = clusterItems,
+                // 🎯 BURADA KENDİ ÖZEL ŞİDDET YAZILI RADYANLI MARKER'IMIZI BAĞLIYORUZ
+                clusterItemContent = { item ->
+                    val isSelected = item.earthquake.id == selectedEarthquakeId
+                    CustomMarkerBadge(
+                        magnitude = item.earthquake.magnitude,
+                        isSelected = isSelected
+                    )
+                },
                 onClusterItemClick = { clusterItem ->
                     val index = mapList.indexOfFirst { it.id == clusterItem.earthquake.id }
                     if (index != -1) {
@@ -208,6 +220,41 @@ fun MapScreen(
                     )
                 }
             }
+        }
+    }
+}
+
+// 🎨 HARİTA ÜZERİNDEKİ ÖZEL ŞİDDET ROZETİ (CUSTOM MARKER COMPOSABLE)
+@Composable
+fun CustomMarkerBadge(
+    magnitude: Double,
+    isSelected: Boolean
+) {
+    val backgroundColor = when {
+        magnitude >= 5.0 -> Color(0xFFD32F2F) // Kırmızı
+        magnitude >= 3.5 -> Color(0xFFE65100) // Turuncu
+        else -> Color(0xFF2E7D32)             // Yeşil
+    }
+
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = backgroundColor,
+        shadowElevation = if (isSelected) 12.dp else 4.dp,
+        border = BorderStroke(
+            width = if (isSelected) 3.dp else 1.5.dp,
+            color = if (isSelected) Color.Yellow else Color.White
+        )
+    ) {
+        Box(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = String.format("%.1f", magnitude),
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = if (isSelected) 15.sp else 12.sp
+            )
         }
     }
 }

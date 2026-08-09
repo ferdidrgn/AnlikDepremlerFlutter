@@ -102,8 +102,7 @@ fun MainAppScreen(mainViewModel: MainViewModel) {
             // 2. TÜM DEPREMLER LİSTESİ
             composable(Screen.Earthquakes.route) {
                 EarthquakeListScreen(
-                    earthquakes = uiState.earthquakes,
-                    isLoading = uiState.isLoading,
+                    viewModel = mainViewModel,
                     onEarthquakeClick = { selectedEq ->
                         navController.navigate("detail/${selectedEq.id}")
                     }
@@ -120,7 +119,6 @@ fun MainAppScreen(mainViewModel: MainViewModel) {
                 SettingsScreen(settingsViewModel = hiltViewModel())
             }
 
-            // 5. DEPREM DETAY EKRANI
             // 5. DEPREM DETAY EKRANI (Deeplink Eklenmiş Hali)
             composable(
                 route = "detail/{earthquakeId}",
