@@ -125,11 +125,9 @@ fun WorldIGPEarthquakeDto.toDomain(): DomainEarthquake {
 // ==========================================
 private fun extractRegion(location: String?): String {
     if (location.isNullOrEmpty()) return "Türkiye"
-    return if (location.contains("(")) {
+    return if (location.contains("("))
         location.substringAfter("(").substringBefore(")").trim()
-    } else {
-        location.split(" ").lastOrNull() ?: "Türkiye"
-    }
+    else location.split(" ").lastOrNull() ?: "Türkiye"
 }
 
 private fun calculateIntensity(magnitude: Double): String {

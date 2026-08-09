@@ -6,15 +6,18 @@ import com.ferdidrgn.anlikdepremler.data.remote.EarthquakeSource
 import com.ferdidrgn.anlikdepremler.data.remote.api.TurkeyAfadEarthquakeApi
 import com.ferdidrgn.anlikdepremler.data.remote.api.TurkeyAllEarthquakeApi
 import com.ferdidrgn.anlikdepremler.data.remote.api.TurkeyKandilliEarthquakeApi
+import com.ferdidrgn.anlikdepremler.data.remote.api.WorldIGPEarthquakeApi
 import com.ferdidrgn.anlikdepremler.data.remote.api.WorldUSGSEarthquakeApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class EarthquakeRepository(
+class EarthquakeRepository @Inject constructor(
     private val kandilliApi: TurkeyKandilliEarthquakeApi,
     private val afadApi: TurkeyAfadEarthquakeApi,
     private val turkeyAllApi: TurkeyAllEarthquakeApi,
-    private val usgsApi: WorldUSGSEarthquakeApi
+    private val usgsApi: WorldUSGSEarthquakeApi,
+    private val worldIgpApi: WorldIGPEarthquakeApi
 ) {
 
     fun getEarthquakes(source: EarthquakeSource = EarthquakeSource.KANDILLI): Flow<List<Earthquake>> =
@@ -42,6 +45,11 @@ class EarthquakeRepository(
                     EarthquakeSource.USGS -> {
                         val response = usgsApi.getWorldUSGSEarthquakes()
                         response.body()?.features?.map { it.toDomain() } ?: emptyList()
+                    }
+
+                    EarthquakeSource.WORLD_IGP -> {
+                        val response = worldIgpApi.getWorldIGPEarthquakes()
+                        response.body()?.map { it.toDomain() } ?: emptyList()
                     }
                 }
                 emit(list)

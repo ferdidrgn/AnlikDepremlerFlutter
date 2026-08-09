@@ -93,7 +93,8 @@ fun EarthquakeListScreen(
             EarthquakeSource.KANDILLI to "Kandilli 🏢",
             EarthquakeSource.AFAD to "AFAD 🚨",
             EarthquakeSource.TURKEY_ALL to "Türkiye Karışık 🌐",
-            EarthquakeSource.USGS to "USGS Dünya 🌍"
+            EarthquakeSource.USGS to "USGS Dünya 🌍",
+            EarthquakeSource.WORLD_IGP to "Dünya (IGP) 🌍"
         )
 
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
