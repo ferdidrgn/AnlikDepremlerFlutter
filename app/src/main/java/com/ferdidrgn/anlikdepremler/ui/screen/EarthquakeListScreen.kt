@@ -13,13 +13,22 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.ferdi.deprem.model.Earthquake
 import com.ferdidrgn.anlikdepremler.ui.components.NativeAdCard
+
+enum class EarthquakeSourceFilter(val displayName: String) {
+    ALL("Tümü"),
+    AFAD("AFAD"),
+    KANDILLI("Kandilli")
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,12 +39,18 @@ fun EarthquakeListScreen(
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var minMagnitudeFilter by remember { mutableStateOf(0.0) }
+    var selectedSource by remember { mutableStateOf(EarthquakeSourceFilter.ALL) }
 
     val filteredList = earthquakes.filter { eq ->
         val matchesQuery = eq.location.contains(searchQuery, ignoreCase = true) ||
                 eq.region.contains(searchQuery, ignoreCase = true)
         val matchesMag = eq.magnitude >= minMagnitudeFilter
-        matchesQuery && matchesMag
+        val matchesSource = when (selectedSource) {
+            EarthquakeSourceFilter.ALL -> true
+            EarthquakeSourceFilter.AFAD -> eq.source.contains("AFAD", ignoreCase = true)
+            EarthquakeSourceFilter.KANDILLI -> eq.source.contains("Kandilli", ignoreCase = true)
+        }
+        matchesQuery && matchesMag && matchesSource
     }
 
     Column(
@@ -46,7 +61,6 @@ fun EarthquakeListScreen(
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Başlık
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -77,9 +91,8 @@ fun EarthquakeListScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Arama Çubuğu
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
@@ -96,9 +109,32 @@ fun EarthquakeListScreen(
             shape = RoundedCornerShape(18.dp)
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-        // Büyüklük Filtreleri
+        // Kaynak Filtresi (AFAD / Kandilli / Tümü)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            EarthquakeSourceFilter.values().forEach { sourceFilter ->
+                FilterChip(
+                    selected = selectedSource == sourceFilter,
+                    onClick = { selectedSource = sourceFilter },
+                    label = {
+                        Text(
+                            sourceFilter.displayName,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp
+                        )
+                    },
+                    shape = RoundedCornerShape(12.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        // Büyüklük Filtresi
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -108,7 +144,7 @@ fun EarthquakeListScreen(
                 FilterChip(
                     selected = minMagnitudeFilter == mag,
                     onClick = { minMagnitudeFilter = mag },
-                    label = { Text(label, fontSize = 12.sp) },
+                    label = { Text(label, fontSize = 11.sp) },
                     shape = RoundedCornerShape(12.dp)
                 )
             }
@@ -121,7 +157,6 @@ fun EarthquakeListScreen(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        // 📌 HER 10 ÖĞEDE BİR DİNAMİK REKLAM KARTLI LAZYCOLUMN
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             contentPadding = PaddingValues(bottom = 90.dp)
@@ -130,13 +165,11 @@ fun EarthquakeListScreen(
                 items = filteredList,
                 key = { _, item -> item.id }
             ) { index, eq ->
-                // Deprem Kartı
                 PremiumEarthquakeCard(
                     earthquake = eq,
                     onClick = { onEarthquakeClick(eq) }
                 )
 
-                // 📌 Her 10 kartta bir (index % 10 == 9) reklam kartı ekle
                 if ((index + 1) % 10 == 0) {
                     Spacer(modifier = Modifier.height(4.dp))
                     NativeAdCard()
@@ -170,32 +203,20 @@ fun PremiumEarthquakeCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
+            // Görsel Destekli Kart Resmi
+            AsyncImage(
+                model = earthquake.cityImageUrl,
+                contentDescription = null,
                 modifier = Modifier
-                    .size(56.dp)
-                    .background(magBgColor, RoundedCornerShape(18.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = String.format("%.1f", earthquake.magnitude),
-                        color = magTextColor,
-                        fontWeight = FontWeight.Black,
-                        fontSize = 18.sp
-                    )
-                    Text(
-                        text = "Mw",
-                        color = magTextColor.copy(alpha = 0.7f),
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
+                    .size(54.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.Crop
+            )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -206,40 +227,34 @@ fun PremiumEarthquakeCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = "${earthquake.region} • ${earthquake.date} ${earthquake.time}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp
                 )
+                Text(
+                    text = "Kaynak: ${earthquake.source}",
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
             }
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Column(horizontalAlignment = Alignment.End) {
+            Box(
+                modifier = Modifier
+                    .size(46.dp)
+                    .background(magBgColor, RoundedCornerShape(14.dp)),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
-                    text = "${String.format("%.1f", earthquake.depth)} km",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 13.sp
+                    text = String.format("%.1f", earthquake.magnitude),
+                    color = magTextColor,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 16.sp
                 )
-                if (earthquake.isSignificant) {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = Color(0xFFFFEBEE)
-                    ) {
-                        Text(
-                            text = "⚠️ KRİTİK",
-                            color = Color(0xFFD32F2F),
-                            fontSize = 9.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                        )
-                    }
-                }
             }
         }
     }

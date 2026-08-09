@@ -42,7 +42,7 @@ class SettingsViewModel @Inject constructor(
 
     fun onContactUsClick() {
         viewModelScope.launch {
-            _eventFlow.emit(SettingsEvent.SendEmail("destek@sarsintitakip.com"))
+            _eventFlow.emit(SettingsEvent.SendEmail("destek@anlikdepremler.com"))
         }
     }
 
@@ -72,13 +72,13 @@ class SettingsViewModel @Inject constructor(
 
     fun onFeedbackClick() {
         viewModelScope.launch {
-            _eventFlow.emit(SettingsEvent.SendEmail("destek@sarsintitakip.com"))
+            _eventFlow.emit(SettingsEvent.SendEmail("destek@anlikdepremler.com"))
         }
     }
 
     fun onPrivacyPolicyClick() {
         viewModelScope.launch {
-            _eventFlow.emit(SettingsEvent.NavigateToWeb("https://sarsintitakip.com/privacy"))
+            _eventFlow.emit(SettingsEvent.NavigateToWeb("https://anlikdepremler.com/privacy"))
         }
     }
 

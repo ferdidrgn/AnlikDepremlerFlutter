@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- İnternet ve Ağ İzinleri -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!-- Konum İzinleri -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <!-- Google Play Uygulama İçi Satın Alma İzni -->
-    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="android.permission.com.android.vending.BILLING" />
 
     <application
         android:name=".EarthquakeApplication"
@@ -21,12 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Material3.DayNight.NoActionBar">
 
-        <!-- AdMob Uygulama ID Tanımı -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="${API_KEY_ADMOB}" />
 
-        <!-- Google Haritalar API Key Tanımı -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${API_KEY_LOCATION}" />
@@ -37,6 +30,29 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- 🌐 1. WEB DEEPLINK (https://anlikdepremler.com/earthquake/...) -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="anlikdepremler.com"
+                    android:pathPrefix="/earthquake"
+                    android:scheme="https" />
+            </intent-filter>
+
+            <!-- 📱 2. ÖZEL ŞEMA DEEPLINK (anlikdepremler://...) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="anlikdepremler" />
             </intent-filter>
         </activity>
 

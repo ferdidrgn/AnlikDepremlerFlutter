@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ferdi.deprem.model.Earthquake
 import com.ferdi.deprem.model.EarthquakeStatistics
-import com.ferdi.deprem.model.MockData
+import com.ferdi.deprem.model.InfoCardItem
 import com.ferdidrgn.anlikdepremler.core.ads.BannerAdView
 import com.ferdidrgn.anlikdepremler.data.remote.EarthquakeSource
 import com.ferdidrgn.anlikdepremler.ui.components.NativeAdCard
@@ -82,12 +82,12 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 📌 5. İSTATİSTİKLER (EN ÜSTTE)
+        // 5. İSTATİSTİKLER (EN ÜSTTE)
         StatisticsSection(statistics = uiState.statistics)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 📌 6. KONUMA GÖRE ARAMA
+        // 6. KONUMA GÖRE ARAMA
         LocationBasedEarthquakeCard(
             rawInput = rawLocationInput,
             isSearching = uiState.isSearchingLocation,
@@ -101,7 +101,7 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 📌 7. DEPREM HARİTASI
+        // 7. DEPREM HARİTASI
         MapPreviewCard()
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -583,6 +583,32 @@ fun MapPreviewCard() {
 
 @Composable
 fun InformationTipsSliderSection() {
+    val localInfoCards = remember {
+        listOf(
+            InfoCardItem(
+                1,
+                "Deprem Çantası Hazırlığı",
+                "Hayatta kalma çantanızda bulunması gereken temel malzemeler.",
+                "Hazırlık",
+                "https://picsum.photos/600/400?random=10"
+            ),
+            InfoCardItem(
+                2,
+                "Çök - Kapan - Tutun",
+                "Deprem anında doğru pozisyon hayat kurtarır.",
+                "Güvenlik",
+                "https://picsum.photos/600/400?random=11"
+            ),
+            InfoCardItem(
+                3,
+                "Bina Sağlamlığı Testi",
+                "Oturduğunuz binanın risk analizini nasıl yaptırırsınız?",
+                "Bilinç",
+                "https://picsum.photos/600/400?random=12"
+            )
+        )
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -605,7 +631,7 @@ fun InformationTipsSliderSection() {
             Spacer(modifier = Modifier.height(12.dp))
 
             LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                items(MockData.infoCards) { item ->
+                items(localInfoCards) { item ->
                     Card(
                         modifier = Modifier
                             .width(230.dp)

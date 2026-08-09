@@ -17,6 +17,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ferdi.deprem.ui.screens.EarthquakeListScreen
+import com.ferdidrgn.anlikdepremler.core.navigation.DeepLinkHelper
 import com.ferdidrgn.anlikdepremler.navigation.Screen
 import com.ferdidrgn.anlikdepremler.ui.components.CustomBottomNavigationBar
 import com.ferdidrgn.anlikdepremler.ui.screen.EarthquakeDetailScreen
@@ -120,9 +121,11 @@ fun MainAppScreen(mainViewModel: MainViewModel) {
             }
 
             // 5. DEPREM DETAY EKRANI
+            // 5. DEPREM DETAY EKRANI (Deeplink Eklenmiş Hali)
             composable(
                 route = "detail/{earthquakeId}",
-                arguments = listOf(navArgument("earthquakeId") { type = NavType.StringType })
+                arguments = listOf(navArgument("earthquakeId") { type = NavType.StringType }),
+                deepLinks = DeepLinkHelper.earthquakeDetailDeepLink
             ) { backStackEntry ->
                 val eqId = backStackEntry.arguments?.getString("earthquakeId")
                 val earthquake = uiState.earthquakes.find { it.id == eqId }

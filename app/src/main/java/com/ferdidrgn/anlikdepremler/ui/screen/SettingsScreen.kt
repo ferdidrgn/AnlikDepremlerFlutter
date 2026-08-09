@@ -235,7 +235,7 @@ fun SettingsScreen(
 private fun sendEmailIntent(context: Context, email: String) {
     val intent = Intent(Intent.ACTION_SENDTO).apply {
         data = Uri.parse("mailto:$email")
-        putExtra(Intent.EXTRA_SUBJECT, "Sarsıntı Takip İletişim")
+        putExtra(Intent.EXTRA_SUBJECT, "Anlık Depremler İletişim")
     }
     context.startActivity(Intent.createChooser(intent, "E-posta Gönder"))
 }
@@ -265,7 +265,7 @@ private fun shareApp(context: Context) {
     val sendIntent = Intent(Intent.ACTION_SEND).apply {
         putExtra(
             Intent.EXTRA_TEXT,
-            "Sarsıntı Takip Uygulaması: https://play.google.com/store/apps/details?id=${context.packageName}"
+            "Anlık Depremler Uygulaması: https://play.google.com/store/apps/details?id=${context.packageName}"
         )
         type = "text/plain"
     }
