@@ -166,4 +166,5 @@
     <!-- Χάρτης -->
     <string name="search_map_placeholder">Αναζήτηση Πόλης/Περιοχής στο Χάρτη...</string>
     <string name="depth_label">Βάθος: %1$.1f km</string>
+    <string name="source_emsc">EMSC Ευρώπη 🇪🇺</string>
 </resources>

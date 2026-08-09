@@ -167,4 +167,5 @@
     <!-- Карта -->
     <string name="search_map_placeholder">Картадан Шаар/Аймак Издөө...</string>
     <string name="depth_label">Тереңдик: %1$.1f км</string>
+    <string name="source_emsc">EMSC Европа 🇪🇺</string>
 </resources>

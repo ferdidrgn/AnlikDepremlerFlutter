@@ -166,4 +166,5 @@
     <!-- Mapa -->
     <string name="search_map_placeholder">Buscar ciudad/región en el mapa...</string>
     <string name="depth_label">Profundidad: %1$.1f km</string>
+    <string name="source_emsc">EMSC Europa 🇪🇺</string>
 </resources>

@@ -166,4 +166,5 @@
     <!-- Map Screen -->
     <string name="search_map_placeholder">Search City/Region on Map...</string>
     <string name="depth_label">Depth: %1$.1f km</string>
+    <string name="source_emsc">EMSC Europe 🇪🇺</string>
 </resources>

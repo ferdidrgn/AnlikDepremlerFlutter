@@ -166,4 +166,5 @@
     <!-- الخريطة -->
     <string name="search_map_placeholder">ابحث عن مدينة/منطقة على الخريطة...</string>
     <string name="depth_label">العمق: %1$.1f كم</string>
+    <string name="source_emsc">EMSC أوروبا 🇪🇺</string>
 </resources>

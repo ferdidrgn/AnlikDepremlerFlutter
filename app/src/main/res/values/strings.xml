@@ -166,4 +166,6 @@
     <!-- Harita Ekranı (MapScreen) -->
     <string name="search_map_placeholder">Haritada Şehir/Bölge Ara...</string>
     <string name="depth_label">Derinlik: %1$.1f km</string>
+
+    <string name="source_emsc">EMSC Avrupa 🇪🇺</string>
 </resources>

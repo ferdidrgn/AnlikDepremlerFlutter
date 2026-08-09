@@ -166,4 +166,4 @@
     <!-- Xarita -->
     <string name="search_map_placeholder">Xaritalardan Shahar/Hudud Qidirish...</string>
     <string name="depth_label">Chuqurlik: %1$.1f km</string>
-</resources>
+    <string name="source_emsc">EMSC Yevropa 🇪🇺</string></resources>

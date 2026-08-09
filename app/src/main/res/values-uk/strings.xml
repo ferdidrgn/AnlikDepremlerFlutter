@@ -166,4 +166,5 @@
     <!-- Карта -->
     <string name="search_map_placeholder">Пошук міста/регіону на карті...</string>
     <string name="depth_label">Глибина: %1$.1f км</string>
+    <string name="source_emsc">EMSC Європа 🇪🇺</string>
 </resources>

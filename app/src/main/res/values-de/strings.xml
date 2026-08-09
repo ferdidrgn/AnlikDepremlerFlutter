@@ -166,4 +166,5 @@
     <!-- Karte -->
     <string name="search_map_placeholder">Stadt/Region auf der Karte suchen...</string>
     <string name="depth_label">Tiefe: %1$.1f km</string>
+    <string name="source_emsc">EMSC Europa 🇪🇺</string>
 </resources>

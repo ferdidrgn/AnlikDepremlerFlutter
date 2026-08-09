@@ -65,4 +65,10 @@ object NetworkModule {
     fun provideWorldIGPEarthquakeApi(builder: Retrofit.Builder): WorldIGPEarthquakeApi =
         builder.baseUrl("https://cache.earthquakenetwork.it/").build()
             .create(WorldIGPEarthquakeApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideEmscApi(builder: Retrofit.Builder): EmscEarthquakeApi =
+        builder.baseUrl("https://www.seismicportal.eu/").build()
+            .create(EmscEarthquakeApi::class.java)
 }

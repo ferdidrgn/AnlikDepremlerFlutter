@@ -120,6 +120,28 @@ fun WorldIGPEarthquakeDto.toDomain(): DomainEarthquake {
     )
 }
 
+fun EmscEarthquakeDto.Feature.toDomain(): DomainEarthquake {
+    val magVal = this.properties?.mag ?: 0.0
+    val coords = this.geometry?.coordinates
+    val timeParts = this.properties?.time?.split("T")
+
+    return DomainEarthquake(
+        id = this.id ?: this.properties?.sourceId ?: java.util.UUID.randomUUID().toString(),
+        location = this.properties?.flynnRegion ?: "Avrupa / Dünya",
+        region = "EMSC - EU",
+        magnitude = magVal,
+        depth = this.properties?.depth ?: coords?.getOrNull(2) ?: 0.0,
+        date = timeParts?.getOrNull(0) ?: "",
+        time = timeParts?.getOrNull(1)?.take(5) ?: "",
+        latitude = coords?.getOrNull(1) ?: 0.0,
+        longitude = coords?.getOrNull(0) ?: 0.0,
+        cityImageUrl = getRandomCityImage(),
+        isSignificant = magVal >= 4.5,
+        intensity = calculateIntensity(magVal),
+        source = "EMSC"
+    )
+}
+
 // ==========================================
 // YARDIMCI METOTLAR
 // ==========================================
