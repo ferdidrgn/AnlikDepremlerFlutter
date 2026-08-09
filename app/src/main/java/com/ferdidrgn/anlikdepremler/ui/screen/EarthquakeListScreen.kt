@@ -95,7 +95,8 @@ fun EarthquakeListScreen(
             EarthquakeSource.AFAD to stringResource(R.string.source_afad),
             EarthquakeSource.TURKEY_ALL to stringResource(R.string.source_turkey_all),
             EarthquakeSource.USGS to stringResource(R.string.source_usgs),
-            EarthquakeSource.WORLD_IGP to stringResource(R.string.source_world_igp)
+            EarthquakeSource.WORLD_IGP to stringResource(R.string.source_world_igp),
+            EarthquakeSource.EMSC to stringResource(R.string.source_emsc)
         )
 
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -133,7 +134,10 @@ fun EarthquakeListScreen(
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
                     IconButton(onClick = { searchQuery = "" }) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.close))
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = stringResource(R.string.close)
+                        )
                     }
                 }
             },

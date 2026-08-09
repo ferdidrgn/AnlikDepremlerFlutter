@@ -181,7 +181,8 @@ fun CreativeSourceSelector(
         EarthquakeSource.AFAD to stringResource(R.string.source_afad),
         EarthquakeSource.TURKEY_ALL to stringResource(R.string.source_turkey_all),
         EarthquakeSource.USGS to stringResource(R.string.source_usgs),
-        EarthquakeSource.WORLD_IGP to stringResource(R.string.source_world_igp)
+        EarthquakeSource.WORLD_IGP to stringResource(R.string.source_world_igp),
+        EarthquakeSource.EMSC to stringResource(R.string.source_emsc)
     )
 
     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
