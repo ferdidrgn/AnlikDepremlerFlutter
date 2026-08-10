@@ -24,29 +24,28 @@ fun RequestAppPermissions(
 ) {
     val context = LocalContext.current
 
-    // İstenecek İzin Listesi
     val permissionsToRequest = remember {
         mutableListOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
         ).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 add(Manifest.permission.POST_NOTIFICATIONS)
+            }
         }.toTypedArray()
     }
 
-    // İzin verilip verilmediğini kontrol etme
     fun checkAllPermissionsGranted(): Boolean {
         return permissionsToRequest.all { permission ->
             ContextCompat.checkSelfPermission(
-                context, permission
+                context,
+                permission
             ) == PackageManager.PERMISSION_GRANTED
         }
     }
 
     var showDialog by remember { mutableStateOf(!checkAllPermissionsGranted()) }
 
-    // Standard Android Activity Result Launcher (Kütüphanesiz)
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissionsMap ->
@@ -58,10 +57,12 @@ fun RequestAppPermissions(
     }
 
     LaunchedEffect(Unit) {
-        if (checkAllPermissionsGranted()) onPermissionsGranted()
+        if (checkAllPermissionsGranted()) {
+            onPermissionsGranted()
+        }
     }
 
-    if (showDialog)
+    if (showDialog) {
         AlertDialog(
             onDismissRequest = { },
             icon = {
@@ -95,4 +96,5 @@ fun RequestAppPermissions(
                 }
             }
         )
+    }
 }
