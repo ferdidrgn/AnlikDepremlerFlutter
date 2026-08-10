@@ -36,22 +36,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
         resourceConfigurations.addAll(
-            listOf(
-                "tr",
-                "en",
-                "de",
-                "es",
-                "it",
-                "ru",
-                "uk",
-                "el",
-                "ky",
-                "uz",
-                "ar",
-                "ko",
-                "ja",
-                "zh"
-            )
+            listOf("tr", "en", "de", "es", "it", "ru", "uk", "el", "ky", "uz", "ar", "ko", "ja", "zh")
         )
 
         manifestPlaceholders["API_KEY_ADMOB"] = secret("API_KEY_ADMOB")
@@ -191,6 +176,8 @@ dependencies {
 
     // --- System UI Controller ---
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
+
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
 
     // 🗺️ Maps Compose & Clustering
     implementation("com.google.maps.android:maps-compose:4.3.3")

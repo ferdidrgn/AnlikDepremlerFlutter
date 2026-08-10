@@ -30,7 +30,10 @@ fun RequestAppPermissions(
         }
     }
 
-    val permissionState = rememberMultiplePermissionsState(permissions = permissionsToRequest)
+    // Accompanist kütüphanesi isimli parametre kabul eder
+    val permissionState = rememberMultiplePermissionsState(
+        permissions = permissionsToRequest
+    )
 
     LaunchedEffect(permissionState.allPermissionsGranted) {
         if (permissionState.allPermissionsGranted) {
