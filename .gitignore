@@ -36,3 +36,4 @@ keystore.properties
 
 # Captures and profiling
 /captures
+/.kotlin
