@@ -1,47 +1,67 @@
 package com.ferdidrgn.anlikdepremler.ui.components
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.ferdidrgn.anlikdepremler.R
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun RequestAppPermissions(
     onPermissionsGranted: () -> Unit
 ) {
-    val permissionsToRequest = mutableListOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    ).apply {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            add(Manifest.permission.POST_NOTIFICATIONS)
+    val context = LocalContext.current
+
+    // İstenecek İzin Listesi
+    val permissionsToRequest = remember {
+        mutableListOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ).apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                add(Manifest.permission.POST_NOTIFICATIONS)
+        }.toTypedArray()
+    }
+
+    // İzin verilip verilmediğini kontrol etme
+    fun checkAllPermissionsGranted(): Boolean {
+        return permissionsToRequest.all { permission ->
+            ContextCompat.checkSelfPermission(
+                context, permission
+            ) == PackageManager.PERMISSION_GRANTED
         }
     }
 
-    // Accompanist kütüphanesi isimli parametre kabul eder
-    val permissionState = rememberMultiplePermissionsState(
-        permissions = permissionsToRequest
-    )
+    var showDialog by remember { mutableStateOf(!checkAllPermissionsGranted()) }
 
-    LaunchedEffect(permissionState.allPermissionsGranted) {
-        if (permissionState.allPermissionsGranted) {
+    // Standard Android Activity Result Launcher (Kütüphanesiz)
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissionsMap ->
+        val areAllGranted = permissionsMap.values.all { it }
+        if (areAllGranted) {
+            showDialog = false
             onPermissionsGranted()
         }
     }
 
-    if (!permissionState.allPermissionsGranted) {
+    LaunchedEffect(Unit) {
+        if (checkAllPermissionsGranted()) onPermissionsGranted()
+    }
+
+    if (showDialog)
         AlertDialog(
             onDismissRequest = { },
             icon = {
@@ -66,12 +86,13 @@ fun RequestAppPermissions(
             },
             confirmButton = {
                 Button(
-                    onClick = { permissionState.launchMultiplePermissionRequest() },
+                    onClick = {
+                        permissionLauncher.launch(permissionsToRequest)
+                    },
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(stringResource(R.string.btn_grant_permissions))
                 }
             }
         )
-    }
 }

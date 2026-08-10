@@ -177,8 +177,6 @@ dependencies {
     // --- System UI Controller ---
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
 
-    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
-
     // 🗺️ Maps Compose & Clustering
     implementation("com.google.maps.android:maps-compose:4.3.3")
     implementation("com.google.maps.android:maps-compose-utils:4.3.3")
