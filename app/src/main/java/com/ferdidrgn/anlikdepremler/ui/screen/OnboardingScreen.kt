@@ -12,9 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ferdidrgn.anlikdepremler.R
+import com.ferdidrgn.anlikdepremler.ui.components.RequestAppPermissions
 import kotlinx.coroutines.launch
 
 data class OnboardingItemData(
@@ -44,6 +43,17 @@ data class OnboardingItemData(
 fun OnboardingScreen(
     onFinishOnboarding: () -> Unit
 ) {
+    var showPermissionDialog by remember { mutableStateOf(false) }
+
+    if (showPermissionDialog) {
+        RequestAppPermissions(
+            onPermissionsGranted = {
+                showPermissionDialog = false
+                onFinishOnboarding()
+            }
+        )
+    }
+
     val onboardingPagesList = remember {
         listOf(
             OnboardingItemData(
@@ -119,7 +129,7 @@ fun OnboardingScreen(
                 modifier = Modifier
                     .clip(CircleShape)
                     .background(Color.Black.copy(alpha = 0.3f))
-                    .clickable { onFinishOnboarding() }
+                    .clickable { showPermissionDialog = true }
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             )
         }
@@ -158,7 +168,7 @@ fun OnboardingScreen(
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         }
                     } else {
-                        onFinishOnboarding()
+                        showPermissionDialog = true
                     }
                 },
                 containerColor = Color.White,

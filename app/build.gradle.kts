@@ -36,7 +36,22 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
         resourceConfigurations.addAll(
-            listOf("tr", "en", "de", "es", "it", "ru", "uk", "el", "ky", "uz", "ar", "ko", "ja", "zh")
+            listOf(
+                "tr",
+                "en",
+                "de",
+                "es",
+                "it",
+                "ru",
+                "uk",
+                "el",
+                "ky",
+                "uz",
+                "ar",
+                "ko",
+                "ja",
+                "zh"
+            )
         )
 
         manifestPlaceholders["API_KEY_ADMOB"] = secret("API_KEY_ADMOB")
@@ -181,6 +196,7 @@ dependencies {
     implementation("com.google.maps.android:maps-compose:4.3.3")
     implementation("com.google.maps.android:maps-compose-utils:4.3.3")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 
     // --- Testing & Debugging ---
     testImplementation(libs.junit)

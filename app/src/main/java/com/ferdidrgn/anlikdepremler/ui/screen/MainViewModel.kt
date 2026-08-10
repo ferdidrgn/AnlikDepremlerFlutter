@@ -6,6 +6,9 @@ import com.ferdi.deprem.model.Earthquake
 import com.ferdi.deprem.model.EarthquakeStatistics
 import com.ferdidrgn.anlikdepremler.core.datastore.PreferencesManager
 import com.ferdidrgn.anlikdepremler.core.network.NetworkMonitor
+import com.ferdidrgn.anlikdepremler.core.util.LocationTracker
+import com.ferdidrgn.anlikdepremler.core.util.LocationUtils
+import com.ferdidrgn.anlikdepremler.core.util.UserLocationResult
 import com.ferdidrgn.anlikdepremler.data.remote.EarthquakeSource
 import com.ferdidrgn.anlikdepremler.domain.usecase.*
 import com.ferdidrgn.anlikdepremler.domain.util.filterByTimeSpan
@@ -15,7 +18,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.milliseconds
 
 data class HomeUiState(
     val isLoading: Boolean = false,
@@ -28,7 +30,10 @@ data class HomeUiState(
     val searchQuery: String = "",
     val locationSearchQuery: String = "",
     val isSearchingLocation: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val userLocation: UserLocationResult? = null,
+    val nearbyAlertEarthquake: Earthquake? = null,
+    val emergencyPhoneNumber: String = ""
 )
 
 @HiltViewModel
@@ -38,7 +43,8 @@ class MainViewModel @Inject constructor(
     private val saveUserPreferencesUseCase: SaveUserPreferencesUseCase,
     private val getUserPreferencesUseCase: GetUserPreferencesUseCase,
     private val preferencesManager: PreferencesManager,
-    private val networkMonitor: NetworkMonitor
+    private val networkMonitor: NetworkMonitor,
+    private val locationTracker: LocationTracker
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -61,13 +67,59 @@ class MainViewModel @Inject constructor(
 
     init {
         observeUserPreferences()
+        observeEmergencyPhone()
         setupDebouncedSearch()
+    }
+
+    private fun observeEmergencyPhone() {
+        viewModelScope.launch {
+            preferencesManager.emergencyPhoneNumber.collect { phone ->
+                _uiState.update { it.copy(emergencyPhoneNumber = phone) }
+            }
+        }
     }
 
     fun completeOnboarding() {
         viewModelScope.launch {
             preferencesManager.saveOnboardingCompleted(true)
         }
+    }
+
+    // 📍 KONUM İZNİ VERİLDİĞİNDE ÇAĞRILAN MERKEZİ METOT
+    fun fetchUserLocationAndSearch() {
+        viewModelScope.launch {
+            val locationResult = locationTracker.getCurrentLocation()
+            if (locationResult != null) {
+                _uiState.update {
+                    it.copy(
+                        userLocation = locationResult,
+                        locationSearchQuery = locationResult.cityName
+                    )
+                }
+                // Otomatik Şehir Araması Yapılıyor
+                if (locationResult.cityName.isNotEmpty()) {
+                    onLocationQueryTyped(locationResult.cityName)
+                }
+                // Yakın Deprem Analizi Yapılıyor
+                checkNearbyEarthquakes(locationResult)
+            }
+        }
+    }
+
+    private fun checkNearbyEarthquakes(userLoc: UserLocationResult) {
+        val criticalEarthquake = _uiState.value.rawEarthquakes.firstOrNull { eq ->
+            eq.magnitude >= 4.0 && LocationUtils.calculateDistanceInKm(
+                userLat = userLoc.latitude,
+                userLng = userLoc.longitude,
+                eqLat = eq.latitude,
+                eqLng = eq.longitude
+            ) <= 100.0
+        }
+        _uiState.update { it.copy(nearbyAlertEarthquake = criticalEarthquake) }
+    }
+
+    fun dismissNearbyAlert() {
+        _uiState.update { it.copy(nearbyAlertEarthquake = null) }
     }
 
     private fun observeUserPreferences() {
@@ -88,7 +140,7 @@ class MainViewModel @Inject constructor(
     private fun setupDebouncedSearch() {
         viewModelScope.launch {
             _locationQueryState
-                .debounce(3000L.milliseconds)
+                .debounce(500L)
                 .distinctUntilChanged()
                 .collect { query ->
                     _uiState.update {
@@ -115,9 +167,7 @@ class MainViewModel @Inject constructor(
             ).catch { e ->
                 _uiState.update { it.copy(isLoading = false, errorMessage = e.localizedMessage) }
             }.collect { list ->
-                // 🎯 1. Analiz UseCase'i çalışıyor
                 val stats = calculateStatisticsUseCase(list)
-
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -127,28 +177,17 @@ class MainViewModel @Inject constructor(
                         errorMessage = null
                     )
                 }
+                _uiState.value.userLocation?.let { checkNearbyEarthquakes(it) }
             }
         }
     }
 
-    // 📌 Zaman Filtreleri Seçildiğinde
     fun onTimeFilterSelected(filter: String) {
         _uiState.update { current ->
             current.copy(
                 selectedTimeFilter = filter,
                 earthquakes = current.rawEarthquakes.filterByTimeSpan(filter)
             )
-        }
-    }
-
-    private fun filterListByTime(list: List<Earthquake>, filter: String): List<Earthquake> {
-        return when (filter) {
-            "1s" -> list.take((list.size * 0.2).toInt().coerceAtLeast(2))
-            "6s" -> list.take((list.size * 0.5).toInt().coerceAtLeast(5))
-            "24s" -> list
-            "7g" -> list
-            "30g" -> list
-            else -> list
         }
     }
 
