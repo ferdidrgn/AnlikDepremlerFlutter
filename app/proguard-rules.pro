@@ -7,8 +7,7 @@
     @com.google.gson.annotations.SerializedName <fields>;
 }
 
-# Veri modellerinizin paket isimlerini korur
--keep class com.ferdidrgn.anlikdepremler.model.** { *; }
+# Veri modellerinin paket isimlerini koru
 -keep class com.ferdidrgn.anlikdepremler.data.** { *; }
 
 # ===================================================================
@@ -32,8 +31,20 @@
 -keep class * extends androidx.lifecycle.ViewModel
 -keep class *_Factory { *; }
 -keep class *_MembersInjector { *; }
--keep class **..*Dagger* { *; }
--keep class **..*Hilt* { *; }
+
+# ===================================================================
+# Dagger Hilt
+# ===================================================================
+-keep class * extends androidx.lifecycle.ViewModel
+-keep class *_Factory { *; }
+-keep class *_MembersInjector { *; }
+
+-keep class dagger.hilt.** { *; }
+-keep class com.google.dagger.** { *; }
+-keepclassmembers class * {
+    @dagger.hilt.android.lifecycle.HiltViewModel <init>(...);
+}
+-dontwarn dagger.hilt.**
 
 # ===================================================================
 # Firebase, Google Play & AdMob
@@ -43,7 +54,16 @@
 -dontwarn com.google.android.gms.**
 
 # ===================================================================
-# Coroutines & DataStore
+# Google Maps Compose & Clustering
+# ===================================================================
+-keep class com.google.maps.android.** { *; }
+-keep class com.google.android.gms.maps.** { *; }
+-dontwarn com.google.maps.android.**
+
+# ===================================================================
+# Coroutines & DataStore & Startup
 # ===================================================================
 -keepclassmembers class kotlinx.coroutines.** { *; }
 -dontwarn kotlinx.coroutines.**
+-keep class androidx.startup.** { *; }
+-dontwarn androidx.**

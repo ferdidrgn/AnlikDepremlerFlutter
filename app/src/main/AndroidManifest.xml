@@ -10,6 +10,32 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="com.android.vending.BILLING" />
 
+    <!-- 🎯 BÜTÜN CİHAZLARI AÇAN KRİTİK DONANIM ESNETMELERİ -->
+    <!-- Google Play'in "GPS yoksa / Arama yoksa elerim" şartını TAMAMEN kaldırıyoruz -->
+    <uses-feature
+        android:name="android.hardware.location"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.network"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
+    <!-- 🎯 COMPOSE & MAPS İÇİN GRAFİK ŞARTINI ESNETME -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="false" />
+
     <queries>
         <!-- 1. Google Play Store uygulamasının varlığını sorgulamaya izin verir (In-App Review / Coffee Donation / Güncelleme kontrolleri için şarttır). -->
         <package android:name="com.android.vending" />

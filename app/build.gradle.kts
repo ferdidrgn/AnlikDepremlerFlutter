@@ -30,8 +30,8 @@ android {
         applicationId = "com.ferdidrgn.anlikdepremler"
         minSdk = 24
         targetSdk = 36
-        versionCode = 31
-        versionName = "1.31"
+        versionCode = 32
+        versionName = "1.32"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -41,6 +41,13 @@ android {
 
         manifestPlaceholders["API_KEY_ADMOB"] = secret("API_KEY_ADMOB")
         manifestPlaceholders["API_KEY_LOCATION"] = secret("API_KEY_LOCATION")
+    }
+
+    // 🎯 AAB BUNDLE DİL VE MİMARİ BÖLÜNMESİNİ GÜVENLİ HALE GETİRME
+    bundle {
+        language.enableSplit = false
+        density.enableSplit = true
+        abi.enableSplit = true
     }
 
     buildTypes {
