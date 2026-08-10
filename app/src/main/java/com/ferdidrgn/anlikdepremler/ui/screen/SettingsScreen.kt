@@ -222,7 +222,7 @@ fun SettingsScreen(
                         .heightIn(max = 400.dp) // Sığmayan diller için dikey kaydırma alanı
                         .verticalScroll(rememberScrollState())
                 ) {
-                    AppLanguage.values().forEach { language ->
+                    AppLanguage.entries.forEach { language ->
                         val isSelected = language == currentLang
                         Row(
                             modifier = Modifier

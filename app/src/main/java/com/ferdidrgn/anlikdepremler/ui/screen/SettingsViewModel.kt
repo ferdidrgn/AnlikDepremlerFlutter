@@ -1,20 +1,16 @@
 package com.ferdidrgn.anlikdepremler.ui.screen
 
-import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ferdidrgn.anlikdepremler.core.datastore.PreferencesManager
 import com.ferdidrgn.anlikdepremler.core.language.AppLanguage
-import com.ferdidrgn.anlikdepremler.core.language.LocaleHelper
 import com.ferdidrgn.anlikdepremler.core.util.LocaleUtils
 import com.ferdidrgn.anlikdepremler.ui.theme.AppThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import androidx.core.content.edit
-import com.ferdidrgn.anlikdepremler.core.util.ReviewHelper
 
 sealed interface SettingsEvent {
     data class SendEmail(val email: String) : SettingsEvent
@@ -51,13 +47,8 @@ class SettingsViewModel @Inject constructor(
     fun onLanguageSelected(context: Context, language: AppLanguage) {
         viewModelScope.launch {
             preferencesManager.saveSelectedLanguage(language.code)
-            LocaleUtils.setAppLanguage(language.code) // LocaleUtils bağlandı!
+            LocaleUtils.setAppLanguage(language.code)
         }
-    }
-
-    // Uygulamayı Oylama Tıklandığında
-    fun onRateAppClick(context: Context) {
-        ReviewHelper.launchInAppReview(context) // ReviewHelper bağlandı!
     }
 
     // 📌 Tema Seçimi (Cream Light, System Dynamic, Dark Night)
@@ -79,6 +70,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    // 📌 Uygulamayı Oylama / Değerlendirme Tıklandığında
     fun onRateAppClick() {
         viewModelScope.launch {
             _eventFlow.emit(SettingsEvent.RequestReview)
