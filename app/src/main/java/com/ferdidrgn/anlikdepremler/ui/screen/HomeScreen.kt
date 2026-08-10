@@ -943,7 +943,7 @@ fun MagnitudeDistributionChart(statistics: EarthquakeStatistics) {
 
 @Composable
 fun AnimatedBar(percentage: Float, color: Color, modifier: Modifier = Modifier) {
-    var animationProgress by remember { mutableStateOf(0f) }
+    var animationProgress by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(percentage) {
         animationProgress = 0f

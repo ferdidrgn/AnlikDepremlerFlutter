@@ -40,7 +40,7 @@ data class EarthquakeMapItem(
     override fun getPosition(): LatLng = LatLng(earthquake.latitude, earthquake.longitude)
     override fun getTitle(): String = earthquake.location
     override fun getSnippet(): String = "${earthquake.magnitude} Mw"
-    override fun getZIndex(): Float? = 0f
+    override fun getZIndex(): Float = 0f
 }
 
 @OptIn(MapsComposeExperimentalApi::class)

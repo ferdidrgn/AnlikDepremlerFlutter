@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var adManager: AdManager
 
     override fun attachBaseContext(newBase: Context) {
-        val prefs = newBase.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val prefs = newBase.getSharedPreferences("app_prefs", MODE_PRIVATE)
         val savedLanguage = prefs.getString("selected_language", "tr") ?: "tr"
         super.attachBaseContext(LocaleHelper.applyLanguage(newBase, savedLanguage))
     }

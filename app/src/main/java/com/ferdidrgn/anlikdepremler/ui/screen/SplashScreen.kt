@@ -22,6 +22,7 @@ import com.ferdidrgn.anlikdepremler.R
 import com.ferdidrgn.anlikdepremler.core.ads.BannerAdView
 import com.ferdidrgn.anlikdepremler.core.util.getAppVersionName
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun SplashScreen(onSplashFinished: () -> Unit) {
@@ -61,7 +62,7 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
 
     LaunchedEffect(key1 = true) {
         startAnimation = true
-        delay(2500)
+        delay(2500.milliseconds)
         onSplashFinished()
     }
 

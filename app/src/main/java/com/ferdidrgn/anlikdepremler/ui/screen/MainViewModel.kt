@@ -18,6 +18,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 data class HomeUiState(
     val isLoading: Boolean = false,
@@ -140,7 +141,7 @@ class MainViewModel @Inject constructor(
     private fun setupDebouncedSearch() {
         viewModelScope.launch {
             _locationQueryState
-                .debounce(500L)
+                .debounce(500L.milliseconds)
                 .distinctUntilChanged()
                 .collect { query ->
                     _uiState.update {

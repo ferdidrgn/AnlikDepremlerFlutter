@@ -9,7 +9,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -177,7 +177,7 @@ fun OnboardingScreen(
                 modifier = Modifier.size(60.dp)
             ) {
                 Icon(
-                    imageVector = if (pagerState.currentPage == onboardingPagesList.size - 1) Icons.Default.Check else Icons.Default.ArrowForward,
+                    imageVector = if (pagerState.currentPage == onboardingPagesList.size - 1) Icons.Default.Check else Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = stringResource(R.string.onboarding_next),
                     modifier = Modifier.size(28.dp)
                 )

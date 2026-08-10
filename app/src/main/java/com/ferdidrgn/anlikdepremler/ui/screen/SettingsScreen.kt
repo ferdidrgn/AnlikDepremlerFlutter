@@ -3,7 +3,6 @@ package com.ferdidrgn.anlikdepremler.ui.screen
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
@@ -40,6 +39,7 @@ import com.ferdidrgn.anlikdepremler.core.util.ReviewHelper
 import com.ferdidrgn.anlikdepremler.ui.components.NativeAdCard
 import com.ferdidrgn.anlikdepremler.ui.theme.AppThemeMode
 import kotlinx.coroutines.flow.collectLatest
+import androidx.core.net.toUri
 
 @Composable
 fun SettingsScreen(
@@ -542,7 +542,7 @@ private fun DividerLine() {
 
 private fun sendEmailIntent(context: Context, email: String) {
     val intent = Intent(Intent.ACTION_SENDTO).apply {
-        data = Uri.parse("mailto:$email")
+        "mailto:$email".toUri().also { data = it }
         putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.app_name))
     }
     context.startActivity(Intent.createChooser(intent, null))
@@ -550,12 +550,12 @@ private fun sendEmailIntent(context: Context, email: String) {
 
 private fun openNotificationSettings(context: Context) {
     val intent = Intent().apply {
-        action = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        action = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             Settings.ACTION_APP_NOTIFICATION_SETTINGS
-        } else {
-            Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-        }
-        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+        else Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
     }
     context.startActivity(intent)
 }
@@ -566,7 +566,7 @@ private fun openLocationSettings(context: Context) {
 }
 
 private fun openWebPage(context: Context, url: String) {
-    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
 }
 
 private fun shareApp(context: Context) {
@@ -620,7 +620,7 @@ private fun launchCoffeeDonationFlow(context: Context, productId: String = DONAT
 
                 billingClient.queryProductDetailsAsync(params) { result, productDetailsResult ->
                     val list = productDetailsResult.productDetailsList
-                    if (result.responseCode == BillingClient.BillingResponseCode.OK && !list.isNullOrEmpty()) {
+                    if (result.responseCode == BillingClient.BillingResponseCode.OK && list.isNotEmpty()) {
                         val productDetails = list.first()
                         val flowParams = BillingFlowParams.newBuilder()
                             .setProductDetailsParamsList(
