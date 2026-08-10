@@ -180,4 +180,19 @@
     <string name="emergency_safe_btn">أنا بخير، أنا في أمان 👍</string>
     <string name="emergency_help_btn">أحتاج إلى مساعدة عاجلة 🚨</string>
     <string name="official_sources_title">🏛️ مراجع المؤسسات الرسمية</string>
+    <string name="emergency_contact_phone">رقم اتصال الطوارئ</string>
+    <string name="emergency_contact_phone_sub">الشخص الذي سيتم إرسال رسالة نصية إليه في حالة الكوارث</string>
+    <string name="emergency_phone_title">جهة اتصال الطوارئ</string>
+    <string name="emergency_phone_desc">أدخل الرقم الذي سنرسل إليه رسالة نصية تتضمن موقعك لإبلاغهم بأنك آمن أو لطلب المساعدة بضغطة زر واحدة أثناء الزلزال.</string>
+    <string name="phone_number_hint">رقم الهاتف</string>
+    <string name="phone_privacy_notice">إشعار الخصوصية: يتم حفظ هذا الرقم فقط في ذاكرة هاتفك ولا يتم حفظه أبداً على خوادمنا.</string>
+    <string name="not_set">لم يحدد بعد</string>
+    <string name="save">حفظ</string>
+    <string name="nearby_earthquake_title">تم اكتشاف زلزال بالقرب منك!</string>
+    <string name="nearby_earthquake_desc">يرجى تحديد أحد الأزرار أدناه لإبلاغ أحبائك بحالتك:</string>
+    <string name="btn_im_safe">أنا بخير</string>
+    <string name="btn_need_help">طلب المساعدة</string>
+    <string name="permissions_title">الأذونات الحيوية مطلوبة</string>
+    <string name="permissions_desc">يحتاج التطبيق إلى أذونات الموقع والإشعارات لاكتشاف الهزات القريبة منك وإرسال إشعارات الطوارئ.</string>
+    <string name="btn_grant_permissions">منح الأذونات</string>
 </resources>

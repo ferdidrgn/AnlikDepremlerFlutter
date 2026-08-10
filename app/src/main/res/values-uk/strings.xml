@@ -181,4 +181,19 @@
     <string name="emergency_safe_btn">Я в порядку, я в безпеці 👍</string>
     <string name="emergency_help_btn">Мені потрібна термінова допомога 🚨</string>
     <string name="official_sources_title">🏛️ Офіційні джерела</string>
+    <string name="emergency_contact_phone">Номер екстреного контакту</string>
+    <string name="emergency_contact_phone_sub">Особа для надсилання СМС у разі лиха</string>
+    <string name="emergency_phone_title">Екстрений контакт</string>
+    <string name="emergency_phone_desc">Введіть номер, на який ми надішлемо СМС із вашим місцезнаходженням, щоб повідомити, що ви в безпеці, або попросити про допомогу одним кліком під час землетрусу.</string>
+    <string name="phone_number_hint">Номер телефону</string>
+    <string name="phone_privacy_notice">Повідомлення про конфіденційність: Цей номер зберігається лише в пам’яті вашого телефону та НІКОЛИ не зберігається на наших серверах.</string>
+    <string name="not_set">Ще не встановлено</string>
+    <string name="save">Зберегти</string>
+    <string name="nearby_earthquake_title">Поблизу виявлено землетрус!</string>
+    <string name="nearby_earthquake_desc">Будь ласка, виберіть одну з кнопок нижче, щоб повідомити про свій статус близким:</string>
+    <string name="btn_im_safe">Я в безпеці</string>
+    <string name="btn_need_help">Попросити про допомогу</string>
+    <string name="permissions_title">Необхідні життєво важливі дозволи</string>
+    <string name="permissions_desc">Додатку потрібні дозволи на Місцезнаходження та Сповіщення для виявлення поштовхів поблизу вас і надсилання екстрених сповіщень.</string>
+    <string name="btn_grant_permissions">Надати дозволи</string>
 </resources>

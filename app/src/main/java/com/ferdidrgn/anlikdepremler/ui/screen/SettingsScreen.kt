@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -27,6 +28,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,9 +36,9 @@ import com.android.billingclient.api.*
 import com.ferdidrgn.anlikdepremler.R
 import com.ferdidrgn.anlikdepremler.core.ads.BannerAdView
 import com.ferdidrgn.anlikdepremler.core.language.AppLanguage
+import com.ferdidrgn.anlikdepremler.core.util.ReviewHelper
 import com.ferdidrgn.anlikdepremler.ui.components.NativeAdCard
 import com.ferdidrgn.anlikdepremler.ui.theme.AppThemeMode
-import com.google.android.play.core.review.ReviewManagerFactory
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -45,12 +47,13 @@ fun SettingsScreen(
     onOpenLegalDocument: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
-    val activity = context as? Activity
 
     val currentLang by settingsViewModel.currentLanguage.collectAsState()
     val currentTheme by settingsViewModel.currentTheme.collectAsState()
+    val emergencyPhone by settingsViewModel.emergencyPhoneNumber.collectAsState()
 
     var showLanguageDialog by remember { mutableStateOf(false) }
+    var showPhoneDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         settingsViewModel.eventFlow.collectLatest { event ->
@@ -58,7 +61,7 @@ fun SettingsScreen(
                 is SettingsEvent.SendEmail -> sendEmailIntent(context, event.email)
                 is SettingsEvent.OpenNotificationSettings -> openNotificationSettings(context)
                 is SettingsEvent.OpenLocationSettings -> openLocationSettings(context)
-                is SettingsEvent.RequestReview -> launchSmartAppReview(context, activity)
+                is SettingsEvent.RequestReview -> ReviewHelper.launchInAppReview(context)
                 is SettingsEvent.ShareApp -> shareApp(context)
                 is SettingsEvent.NavigateToWeb -> openWebPage(context, event.url)
                 is SettingsEvent.BuyCoffee -> launchCoffeeDonationFlow(context, event.productId)
@@ -89,7 +92,6 @@ fun SettingsScreen(
                 icon = Icons.Default.Language,
                 iconBgColor = Color(0xFF2196F3),
                 title = stringResource(R.string.select_language),
-                // 🎯 Kaç adet dil destekleniyorsa dinamik olarak sayısını başlığın yanına/soluna rozet olarak basıyoruz
                 badgeText = "${AppLanguage.entries.size}",
                 valueText = "${currentLang.flag} ${currentLang.displayName}",
                 onClick = { showLanguageDialog = true }
@@ -98,7 +100,6 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // MODERN DOKUNMATİK TEMA SEÇİCİ KART (SEGMENTED CONTROL)
         ModernThemeSelectorCard(
             currentTheme = currentTheme,
             onThemeSelected = { newTheme ->
@@ -108,9 +109,18 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // 2. BİLDİRİM VE İZİNLER
+        // 2. BİLDİRİM VE İZİNLER + ACİL DURUM İLETİŞİMİ
         SettingsCategoryTitle(stringResource(R.string.category_notifications))
         SettingsCardContainer {
+            ModernSettingsTile(
+                icon = Icons.Default.PhoneInTalk,
+                iconBgColor = Color(0xFFE53935),
+                title = stringResource(R.string.emergency_contact_phone),
+                subtitle = stringResource(R.string.emergency_contact_phone_sub),
+                valueText = if (emergencyPhone.isNotEmpty()) emergencyPhone else stringResource(R.string.not_set),
+                onClick = { showPhoneDialog = true }
+            )
+            DividerLine()
             ModernSettingsTile(
                 icon = Icons.Default.Notifications,
                 iconBgColor = Color(0xFFFF9800),
@@ -130,7 +140,6 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 🎯 1. REKLAM ALANI: İZİNLER İLE DESTEK ARASINDAKİ BANNER BANTI
         BannerAdView(modifier = Modifier.fillMaxWidth())
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -195,16 +204,91 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // 🎯 2. REKLAM ALANI: SAYFA ALTI NATIVE KART REKLAMI
         NativeAdCard()
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // 🎯 3. REKLAM ALANI: EN ALT BANNER REKLAM BANTI
         BannerAdView(modifier = Modifier.fillMaxWidth())
     }
 
-    // DİL SEÇİM POPUP
+    // 🎯 ACİL DURUM TELEFON NUMARASI AYARLAMA DİYALOĞU
+    if (showPhoneDialog) {
+        var tempPhoneInput by remember { mutableStateOf(emergencyPhone) }
+
+        AlertDialog(
+            onDismissRequest = { showPhoneDialog = false },
+            title = {
+                Text(
+                    text = stringResource(R.string.emergency_phone_title),
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column {
+                    Text(
+                        text = stringResource(R.string.emergency_phone_desc),
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    OutlinedTextField(
+                        value = tempPhoneInput,
+                        onValueChange = { tempPhoneInput = it },
+                        placeholder = { Text("05XXXXXXXXX") },
+                        label = { Text(stringResource(R.string.phone_number_hint)) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                        shape = RoundedCornerShape(14.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // GİZLİLİK VE BİLGİLENDİRME UYARISI
+                    Surface(
+                        color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.35f),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                Icons.Default.Security,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = stringResource(R.string.phone_privacy_notice),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        settingsViewModel.saveEmergencyPhone(tempPhoneInput)
+                        showPhoneDialog = false
+                    },
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Text(stringResource(R.string.save))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showPhoneDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+
+    // DİL SEÇİM DİYALOĞU
     if (showLanguageDialog) {
         AlertDialog(
             onDismissRequest = { showLanguageDialog = false },
@@ -215,11 +299,10 @@ fun SettingsScreen(
                 )
             },
             text = {
-                // 🎯 Scroll edilebilir alan ve yükseklik kısıtlaması
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(max = 400.dp) // Sığmayan diller için dikey kaydırma alanı
+                        .heightIn(max = 400.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
                     AppLanguage.entries.forEach { language ->
@@ -253,8 +336,6 @@ fun SettingsScreen(
                         }
                     }
                     Spacer(modifier = Modifier.height(12.dp))
-
-                    // DIALOG ALT REKLAMI
                     BannerAdView(modifier = Modifier.fillMaxWidth())
                 }
             },
@@ -383,7 +464,6 @@ private fun ModernSettingsTile(
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // İKON
         Box(
             modifier = Modifier
                 .size(38.dp)
@@ -401,7 +481,6 @@ private fun ModernSettingsTile(
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        // 🎯 DİL SAYISI ROZETİ (Sayı varsa ikondan hemen sonra, başlığın en solunda görünür)
         if (badgeText != null) {
             Surface(
                 shape = RoundedCornerShape(8.dp),
@@ -418,7 +497,6 @@ private fun ModernSettingsTile(
             }
         }
 
-        // BAŞLIK VE ALT BAŞLIK
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
@@ -435,7 +513,6 @@ private fun ModernSettingsTile(
             }
         }
 
-        // SAĞDAKİ DEĞER (Seçili Dil: 🇹🇷 Türkçe)
         if (valueText != null) {
             Text(
                 text = valueText,
@@ -461,47 +538,6 @@ private fun DividerLine() {
         color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
         modifier = Modifier.padding(start = 68.dp)
     )
-}
-
-private fun launchSmartAppReview(context: Context, activity: Activity?) {
-    if (activity == null) return
-    val manager = ReviewManagerFactory.create(context)
-    val request = manager.requestReviewFlow()
-
-    request.addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            val reviewInfo = task.result
-            val flow = manager.launchReviewFlow(activity, reviewInfo)
-            flow.addOnCompleteListener {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.thanks_for_rating),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        } else {
-            openPlayStore(context)
-        }
-    }
-}
-
-private fun openPlayStore(context: Context) {
-    val appPackageName = context.packageName
-    try {
-        context.startActivity(
-            Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("market://details?id=$appPackageName")
-            )
-        )
-    } catch (e: Exception) {
-        context.startActivity(
-            Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
-            )
-        )
-    }
 }
 
 private fun sendEmailIntent(context: Context, email: String) {

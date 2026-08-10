@@ -180,4 +180,19 @@
     <string name="emergency_safe_btn">Είμαι καλά, είμαι ασφαλής 👍</string>
     <string name="emergency_help_btn">Χρειάζομαι επείγουσα βοήθεια 🚨</string>
     <string name="official_sources_title">🏛️ Επίσημες Πηγές</string>
+    <string name="emergency_contact_phone">Αριθμός επαφής έκτακτης ανάγκης</string>
+    <string name="emergency_contact_phone_sub">Άτομο για αποστολή SMS σε περίπτωση καταστροφής</string>
+    <string name="emergency_phone_title">Επαφή έκτακτης ανάγκης</string>
+    <string name="emergency_phone_desc">Εισαγάγετε τον αριθμό στον οποίο θα στείλουμε SMS με την τοποθεσία σας για να δηλώσετε ότι είστε ασφαλείς ή να ζητήσετε βοήθεια με ένα κλικ κατά τη διάρκεια σεισμού.</string>
+    <string name="phone_number_hint">Αριθμός τηλεφώνου</string>
+    <string name="phone_privacy_notice">Σημείωμα απορρήτου: Αυτός ο αριθμός αποθηκεύεται μόνο στη μνήμη του τηλεφώνου σας και ΔΕΝ αποθηκεύεται ΠΟΤΕ στους διακομιστές μας.</string>
+    <string name="not_set">Δεν έχει οριστεί ακόμα</string>
+    <string name="save">Αποθήκευση</string>
+    <string name="nearby_earthquake_title">Εντοπίστηκε σεισμός κοντά σας!</string>
+    <string name="nearby_earthquake_desc">Παρακαλώ επιλέξτε ένα από τα παρακάτω κουμπιά για να ενημερώσετε την κατάστασή σας:</string>
+    <string name="btn_im_safe">Είμαι ασφαλής</string>
+    <string name="btn_need_help">Ζητήστε βοήθεια</string>
+    <string name="permissions_title">Απαιτούνται ζωτικές άδειες</string>
+    <string name="permissions_desc">Η εφαρμογή χρειάζεται άδειες Τοποθεσίας και Ειδοποιήσεων για να εντοπίζει δονήσεις κοντά σας και να στέλνει ειδοποιήσεις έκτακτης ανάγκης.</string>
+    <string name="btn_grant_permissions">Παραχώρηση αδειών</string>
 </resources>

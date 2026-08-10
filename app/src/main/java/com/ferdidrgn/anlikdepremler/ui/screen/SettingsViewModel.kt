@@ -27,6 +27,7 @@ class SettingsViewModel @Inject constructor(
     private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
+    // --- DİL VE TEMA STATE'LERİ ---
     val currentLanguage: StateFlow<AppLanguage> = preferencesManager.selectedLanguage.map {
         AppLanguage.fromCode(it)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AppLanguage.TURKISH)
@@ -40,8 +41,19 @@ class SettingsViewModel @Inject constructor(
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AppThemeMode.CREAM_LIGHT)
 
+    // --- ACİL DURUM KİŞİSEL TELEFON NUMARASI STATE'İ ---
+    val emergencyPhoneNumber: StateFlow<String> = preferencesManager.emergencyPhoneNumber
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
+
     private val _eventFlow = MutableSharedFlow<SettingsEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    // 📌 Acil Durum Numarasını Yerel Hafızaya (DataStore) Kaydeder
+    fun saveEmergencyPhone(phoneNumber: String) {
+        viewModelScope.launch {
+            preferencesManager.saveEmergencyPhoneNumber(phoneNumber)
+        }
+    }
 
     // 📌 Dil Seçimi (Arayüzü Anında Yeniler)
     fun onLanguageSelected(context: Context, language: AppLanguage) {
@@ -70,7 +82,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    // 📌 Uygulamayı Oylama / Değerlendirme Tıklandığında
     fun onRateAppClick() {
         viewModelScope.launch {
             _eventFlow.emit(SettingsEvent.RequestReview)

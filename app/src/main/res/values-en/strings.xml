@@ -180,4 +180,19 @@
     <string name="emergency_safe_btn">I\'m Fine, I\'m Safe 👍</string>
     <string name="emergency_help_btn">I Need Emergency Help 🚨</string>
     <string name="official_sources_title">🏛️ Official Institution References</string>
+    <string name="emergency_contact_phone">Emergency Contact Number</string>
+    <string name="emergency_contact_phone_sub">Person to send SMS in case of disaster</string>
+    <string name="emergency_phone_title">Emergency Contact</string>
+    <string name="emergency_phone_desc">Enter the number we will send an SMS with your location to indicate you are safe or request help with a single click during an earthquake.</string>
+    <string name="phone_number_hint">Phone Number</string>
+    <string name="phone_privacy_notice">Privacy Notice: This number is stored only in your phone\'s memory and is NEVER saved on our servers.</string>
+    <string name="not_set">Not Set Yet</string>
+    <string name="save">Save</string>
+    <string name="nearby_earthquake_title">Earthquake Detected Nearby!</string>
+    <string name="nearby_earthquake_desc">Please select one of the buttons below to notify your loved ones of your status:</string>
+    <string name="btn_im_safe">I\'m Safe</string>
+    <string name="btn_need_help">Request Help</string>
+    <string name="permissions_title">Vital Permissions Required</string>
+    <string name="permissions_desc">The Earthquakes app needs Location and Notification permissions to detect tremors near you and send emergency notifications.</string>
+    <string name="btn_grant_permissions">Grant Permissions</string>
 </resources>

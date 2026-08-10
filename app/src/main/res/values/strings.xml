@@ -181,4 +181,20 @@
     <string name="emergency_safe_btn">İyiyim, Güvendeyim 👍</string>
     <string name="emergency_help_btn">Acil Yardıma İhtiyacım Var 🚨</string>
     <string name="official_sources_title">🏛️ Resmi Kurum Referansları</string>
+
+    <string name="emergency_contact_phone">Acil Durum Numarası</string>
+    <string name="emergency_contact_phone_sub">Afet anında SMS gönderilecek kişi</string>
+    <string name="emergency_phone_title">Acil Durum Kişisi</string>
+    <string name="emergency_phone_desc">Deprem anında tek tıkla güvende olduğunuzu veya yardım isteğinizi konumunuzla birlikte SMS atacağımız numarayı girin.</string>
+    <string name="phone_number_hint">Telefon Numarası</string>
+    <string name="phone_privacy_notice">Gizlilik Uyarısı: Bu numara sadece telefonunuzun hafızasında saklanır, sunucularımıza ASLA kaydedilmez.</string>
+    <string name="not_set">Henüz Eklenmedi</string>
+    <string name="save">Kaydet</string>
+    <string name="nearby_earthquake_title">Yakınınızda Deprem Algılandı!</string>
+    <string name="nearby_earthquake_desc">Durumunuzu yakınlarınıza bildirmek için lütfen aşağıdaki butonlardan birini seçin:</string>
+    <string name="btn_im_safe">Güvendeyim</string>
+    <string name="btn_need_help">Yardım İsteyin</string>
+    <string name="permissions_title">Hayati İzinler Gereklidir</string>
+    <string name="permissions_desc">Anlık Depremler uygulamasının yakınınızdaki sarsıntıları algılayıp size acil durum bildirimi gönderebilmesi için Konum ve Bildirim izinlerine ihtiyacı vardır.</string>
+    <string name="btn_grant_permissions">İzinleri Ver</string>
 </resources>

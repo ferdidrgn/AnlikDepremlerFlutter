@@ -180,4 +180,19 @@
     <string name="emergency_safe_btn">Я в порядке, я в безопасности 👍</string>
     <string name="emergency_help_btn">Мне нужна срочная помощь 🚨</string>
     <string name="official_sources_title">🏛️ Ссылки на официальные источники</string>
+    <string name="emergency_contact_phone">Номер экстренного контакта</string>
+    <string name="emergency_contact_phone_sub">Лицо для отправки СМС в случае бедствия</string>
+    <string name="emergency_phone_title">Экстренный контакт</string>
+    <string name="emergency_phone_desc">Введите номер, на который мы отправим СМС с вашим местоположением, чтобы сообщить, что вы в безопасности, или запросить помощь одним кликом во время землетрясения.</string>
+    <string name="phone_number_hint">Номер телефона</string>
+    <string name="phone_privacy_notice">Уведомление о конфиденциальности: Этот номер хранится только в памяти вашего телефона и НИКОГДА не сохраняется на наших серверах.</string>
+    <string name="not_set">Еще не установлено</string>
+    <string name="save">Сохранить</string>
+    <string name="nearby_earthquake_title">Рядом обнаружено землетрясение!</string>
+    <string name="nearby_earthquake_desc">Пожалуйста, выберите одну из кнопок ниже, чтобы сообщить о своем статусе близким:</string>
+    <string name="btn_im_safe">Я в безопасности</string>
+    <string name="btn_need_help">Запросить помощь</string>
+    <string name="permissions_title">Требуются жизненно важные разрешения</string>
+    <string name="permissions_desc">Приложению требуются разрешения на Местоположение и Уведомления для обнаружения толчков рядом с вами и отправки экстренных уведомлений.</string>
+    <string name="btn_grant_permissions">Предоставить разрешения</string>
 </resources>

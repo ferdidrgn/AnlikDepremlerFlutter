@@ -183,4 +183,19 @@
     <string name="emergency_safe_btn">無事です、安全です 👍</string>
     <string name="emergency_help_btn">緊急支援が必要です 🚨</string>
     <string name="official_sources_title">🏛️ 公的機関の参照情報</string>
+    <string name="emergency_contact_phone">緊急連絡先電話番号</string>
+    <string name="emergency_contact_phone_sub">災害時にSMSを送信する相手</string>
+    <string name="emergency_phone_title">緊急連絡先</string>
+    <string name="emergency_phone_desc">地震発生時にワンタップで無事を知らせたり救助を we 要請できるよう、 위치情報付きSMSを送信する電話番号を入力してください。</string>
+    <string name="phone_number_hint">電話番号</string>
+    <string name="phone_privacy_notice">プライバシーに関する注意：この番号はお使いのスマートフォンのメモリにのみ保存され、当社のサーバーに保存されることは一切ありません。</string>
+    <string name="not_set">未設定</string>
+    <string name="save">保存</string>
+    <string name="nearby_earthquake_title">近くで地震が検知されました！</string>
+    <string name="nearby_earthquake_desc">安否状況を大切な人に知らせるには、以下のボタンのいずれかを選択してください：</string>
+    <string name="btn_im_safe">無事です</string>
+    <string name="btn_need_help">救助を要請</string>
+    <string name="permissions_title">必要な権限について</string>
+    <string name="permissions_desc">アプリが近くの揺れを検知して緊急通知を送信するには、位置情報と通知の権限が必要です。</string>
+    <string name="btn_grant_permissions">権限を許可</string>
 </resources>

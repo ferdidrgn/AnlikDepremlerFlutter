@@ -180,4 +180,19 @@
     <string name="emergency_safe_btn">Men yaxshiman, xavfsizdaman 👍</string>
     <string name="emergency_help_btn">Menga shoshilinch yordam kerak 🚨</string>
     <string name="official_sources_title">🏛️ Rasmiy tashkilot manbalari</string>
+    <string name="emergency_contact_phone">Favqulodda aloqa raqami</string>
+    <string name="emergency_contact_phone_sub">Otabat paytida SMS yuboriladigan shaxs</string>
+    <string name="emergency_phone_title">Favqulodda aloqa</string>
+    <string name="emergency_phone_desc">Zilzila paytida xavfsiz ekanligingizni bildirish yoki yordam so\'rash uchun joylashuvingiz bilan SMS yuboriladigan raqamni kiriting.</string>
+    <string name="phone_number_hint">Telefon raqami</string>
+    <string name="phone_privacy_notice">Maxfiylik bildirishnomasi: Ushbu raqam faqat telefoningiz xotirasida saqlanadi va serverlarimizga HECH QACHON saqlanmaydi.</string>
+    <string name="not_set">Hali sozlanmagan</string>
+    <string name="save">Saqlash</string>
+    <string name="nearby_earthquake_title">Yaqiningizda zilzila aniqlandi!</string>
+    <string name="nearby_earthquake_desc">Yaqinlaringizga holatingiz haqida xabar berish uchun quyidagi tugmalardan birini tanlang:</string>
+    <string name="btn_im_safe">Xavfsizdaman</string>
+    <string name="btn_need_help">Yordam so\'rash</string>
+    <string name="permissions_title">Muhim ruxsatlar talab qilinadi</string>
+    <string name="permissions_desc">Ilova yaqiningizdagi silkinishlarni aniqlashi va favqulodda xabarnomalarni yuborishi uchun Joylashuv va Bildirishnoma ruxsatlari kerak.</string>
+    <string name="btn_grant_permissions">Ruxsat berish</string>
 </resources>

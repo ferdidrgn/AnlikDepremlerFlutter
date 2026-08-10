@@ -181,4 +181,19 @@
     <string name="emergency_safe_btn">Мен жакшымын, коопсуз жердемин 👍</string>
     <string name="emergency_help_btn">Мага шашылыш жардам керек 🚨</string>
     <string name="official_sources_title">🏛️ Расмий мекеме шилтемелери</string>
+    <string name="emergency_contact_phone">Шашылыш байланыш номери</string>
+    <string name="emergency_contact_phone_sub">Кырсык учурунда СМС жөнөтүлө турган адам</string>
+    <string name="emergency_phone_title">Шашылыш байланыш</string>
+    <string name="emergency_phone_desc">Зилзала учурунда коопсуз экениңизди билдирүү же жардам суроо үчүн жайгашкан жериңиз менен СМС жөнөтүлө турган номерди киргизиңиз.</string>
+    <string name="phone_number_hint">Телефон номери</string>
+    <string name="phone_privacy_notice">Купуялык эскертүүсү: Бул номер телефонуңуздун эстутумунда гана сакталат, серверлерибизге ЭЧ КАЧАН сакталбайт.</string>
+    <string name="not_set">Азырынча белгилене элек</string>
+    <string name="save">Сактоо</string>
+    <string name="nearby_earthquake_title">Жаныңызда жер титирөө катталды!</string>
+    <string name="nearby_earthquake_desc">Абалыңызды жакындарыңызга билдирүү үчүн төмөнкү баскычтардын бирин тандаңыз:</string>
+    <string name="btn_im_safe">Мен коопсузмун</string>
+    <string name="btn_need_help">Жардам суроо</string>
+    <string name="permissions_title">Маанилүү уруксаттар талап кылынат</string>
+    <string name="permissions_desc">Сиздин жаныңыздагы силкинүүлөрдү аныктоо жана шашылыш билдирүүлөрдү жөнөтүү үчүн колдонмого Жайгашкан жер жана Билдирүү уруксаттары керек.</string>
+    <string name="btn_grant_permissions">Уруксат берүү</string>
 </resources>

@@ -180,4 +180,19 @@
     <string name="emergency_safe_btn">Estoy bien, estoy a salvo 👍</string>
     <string name="emergency_help_btn">Necesito ayuda de emergencia 🚨</string>
     <string name="official_sources_title">🏛️ Referencias Oficiales</string>
+    <string name="emergency_contact_phone">Número de contacto de emergencia</string>
+    <string name="emergency_contact_phone_sub">Persona a quien enviar SMS en caso de desastre</string>
+    <string name="emergency_phone_title">Contacto de emergencia</string>
+    <string name="emergency_phone_desc">Ingrese el número al que enviaremos un SMS con su ubicación para indicar que está a salvo o solicitar ayuda con un solo clic durante un terremoto.</string>
+    <string name="phone_number_hint">Número de teléfono</string>
+    <string name="phone_privacy_notice">Aviso de privacidad: Este número se almacena solo en la memoria de su teléfono y NUNCA se guarda en nuestros servidores.</string>
+    <string name="not_set">Aún no configurado</string>
+    <string name="save">Guardar</string>
+    <string name="nearby_earthquake_title">¡Terremoto detectado cerca!</string>
+    <string name="nearby_earthquake_desc">Por favor, seleccione uno de los siguientes botones para notificar su estado:</string>
+    <string name="btn_im_safe">Estoy a salvo</string>
+    <string name="btn_need_help">Solicitar ayuda</string>
+    <string name="permissions_title">Permisos vitales requeridos</string>
+    <string name="permissions_desc">La aplicación necesita permisos de Ubicación y Notificación para detectar temblores cerca de usted y enviar notificaciones de emergencia.</string>
+    <string name="btn_grant_permissions">Conceder permisos</string>
 </resources>

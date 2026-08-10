@@ -180,4 +180,19 @@
     <string name="emergency_safe_btn">Sto bene, sono al sicuro 👍</string>
     <string name="emergency_help_btn">Ho bisogno di aiuto urgente 🚨</string>
     <string name="official_sources_title">🏛️ Riferimenti Istituzionali Ufficiali</string>
+    <string name="emergency_contact_phone">Numero di contatto di emergenza</string>
+    <string name="emergency_contact_phone_sub">Persona a cui inviare un SMS in caso di disastro</string>
+    <string name="emergency_phone_title">Contatto di emergenza</string>
+    <string name="emergency_phone_desc">Inserisci il numero a cui invieremo un SMS con la tua posizione per indicare che sei al sicuro o per richiedere aiuto con un solo clic durante un terremoto.</string>
+    <string name="phone_number_hint">Numero di telefono</string>
+    <string name="phone_privacy_notice">Informativa sulla privacy: Questo numero è memorizzato solo nella memoria del telefono e NON viene mai salvato sui nostri server.</string>
+    <string name="not_set">Non ancora impostato</string>
+    <string name="save">Salva</string>
+    <string name="nearby_earthquake_title">Terremoto rilevato nelle vicinanze!</string>
+    <string name="nearby_earthquake_desc">Seleziona uno dei pulsanti sottostanti per comunicare il tuo stato:</string>
+    <string name="btn_im_safe">Sono al sicuro</string>
+    <string name="btn_need_help">Richiedi aiuto</string>
+    <string name="permissions_title">Autorizzazioni vitali richieste</string>
+    <string name="permissions_desc">L\'app necessita dei permessi di Posizione e Notifica per rilevare scosse vicine a te e inviare notifiche di emergenza.</string>
+    <string name="btn_grant_permissions">Concedi autorizzazioni</string>
 </resources>

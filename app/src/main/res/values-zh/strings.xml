@@ -182,4 +182,19 @@
     <string name="emergency_safe_btn">我很好，很安全 👍</string>
     <string name="emergency_help_btn">需要紧急救援 🚨</string>
     <string name="official_sources_title">🏛️ 官方机构参考</string>
+    <string name="emergency_contact_phone">紧急联系电话</string>
+    <string name="emergency_contact_phone_sub">发生灾害时发送短信的对象</string>
+    <string name="emergency_phone_title">紧急联系人</string>
+    <string name="emergency_phone_desc">请输入一个电话号码，地震发生时只需一键即可向该号码发送包含您位置的短信，以告知安全或寻求帮助。</string>
+    <string name="phone_number_hint">电话号码</string>
+    <string name="phone_privacy_notice">隐私说明：该号码仅保存在您的手机内存中，绝不会保存到我们的服务器上。</string>
+    <string name="not_set">尚未设置</string>
+    <string name="save">保存</string>
+    <string name="nearby_earthquake_title">在您附近检测到地震！</string>
+    <string name="nearby_earthquake_desc">请选择以下按钮之一，向亲友通报您的状态：</string>
+    <string name="btn_im_safe">我目前安全</string>
+    <string name="btn_need_help">请求救援</string>
+    <string name="permissions_title">需要 critical 权限</string>
+    <string name="permissions_desc">应用需要位置和通知权限，以便检测您附近的地震并发送紧急通知。</string>
+    <string name="btn_grant_permissions">授予权限</string>
 </resources>

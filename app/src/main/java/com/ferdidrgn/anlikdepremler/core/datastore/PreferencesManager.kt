@@ -22,6 +22,8 @@ class PreferencesManager @Inject constructor(
     private val ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("onboarding_completed")
     private val SELECTED_LANGUAGE_KEY = stringPreferencesKey("selected_language")
 
+    private val EMERGENCY_PHONE_KEY = stringPreferencesKey("emergency_phone_number")
+
     // --- DEPREM VERİ KAYNAĞI ---
     val selectedSource: Flow<String> = context.dataStore.data.map { prefs ->
         prefs[SELECTED_SOURCE_KEY] ?: "KANDILLI"
@@ -65,5 +67,15 @@ class PreferencesManager @Inject constructor(
 
     suspend fun saveOnboardingCompleted(completed: Boolean) {
         context.dataStore.edit { prefs -> prefs[ONBOARDING_COMPLETED_KEY] = completed }
+    }
+
+    val emergencyPhoneNumber: Flow<String> = context.dataStore.data.map { prefs ->
+        prefs[EMERGENCY_PHONE_KEY] ?: ""
+    }
+
+    suspend fun saveEmergencyPhoneNumber(phoneNumber: String) {
+        context.dataStore.edit { prefs ->
+            prefs[EMERGENCY_PHONE_KEY] = phoneNumber
+        }
     }
 }
