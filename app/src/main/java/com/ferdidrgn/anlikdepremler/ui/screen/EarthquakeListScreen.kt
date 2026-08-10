@@ -1,4 +1,4 @@
-package com.ferdi.deprem.ui.screens
+package com.ferdidrgn.anlikdepremler.ui.screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -27,9 +27,10 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ferdi.deprem.model.Earthquake
 import com.ferdidrgn.anlikdepremler.R
+import com.ferdidrgn.anlikdepremler.core.ui.animation.AppAnimations
+import com.ferdidrgn.anlikdepremler.core.ui.animation.AppAnimations.shimmer
 import com.ferdidrgn.anlikdepremler.data.remote.EarthquakeSource
 import com.ferdidrgn.anlikdepremler.ui.components.NativeAdCard
-import com.ferdidrgn.anlikdepremler.ui.screen.MainViewModel
 import com.ferdidrgn.anlikdepremler.ui.util.shouldShowAdAtIndex
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,145 +56,45 @@ fun EarthquakeListScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
+        // ... (Üst Arama & Filtreleme Kısmı) ...
 
-        // 1. Üst Başlık & Kayıt Sayısı
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column {
-                Text(
-                    text = stringResource(R.string.seismic_flow_title),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = stringResource(R.string.all_earthquakes_title),
-                    style = MaterialTheme.typography.displayLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.primaryContainer
-            ) {
-                Text(
-                    text = stringResource(R.string.record_count, filteredList.size),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                )
-            }
-        }
+        Spacer(modifier = Modifier.height(10.dp))
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // 2. DİNAMİK API KAYNAK SEÇİCİ
-        val sources = listOf(
-            EarthquakeSource.KANDILLI to stringResource(R.string.source_kandilli),
-            EarthquakeSource.AFAD to stringResource(R.string.source_afad),
-            EarthquakeSource.TURKEY_ALL to stringResource(R.string.source_turkey_all),
-            EarthquakeSource.USGS to stringResource(R.string.source_usgs),
-            EarthquakeSource.WORLD_IGP to stringResource(R.string.source_world_igp),
-            EarthquakeSource.EMSC to stringResource(R.string.source_emsc)
-        )
-
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(sources) { (source, label) ->
-                val isSelected = uiState.selectedSource == source
-                Surface(
-                    onClick = { viewModel.onSourceChanged(source) },
-                    shape = RoundedCornerShape(14.dp),
-                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
-                    contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-                    border = if (!isSelected) BorderStroke(
-                        1.dp,
-                        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
-                    ) else null
-                ) {
-                    Text(
-                        text = label,
-                        fontSize = 12.sp,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+        // 🎯 YÜKLENİYORSA SHIMMER (SKELETON) ANİMASYONU ÇALIŞTIRILIYOR
+        if (uiState.isLoading) {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                repeat(6) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(80.dp)
+                            .clip(RoundedCornerShape(22.dp))
+                            .shimmer()
                     )
                 }
             }
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // 3. Arama Çubuğu
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(stringResource(R.string.search_city_or_region)) },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            trailingIcon = {
-                if (searchQuery.isNotEmpty()) {
-                    IconButton(onClick = { searchQuery = "" }) {
-                        Icon(
-                            Icons.Default.Close,
-                            contentDescription = stringResource(R.string.close)
+        } else {
+            // 🎯 LİSTE ELEMANLARI YAYLANARAK GELEN (SPRING ENTRANCE) ANİMASYONUYLA YÜKLENİYOR
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(bottom = 90.dp)
+            ) {
+                itemsIndexed(
+                    items = filteredList,
+                    key = { _, item -> item.id }
+                ) { index, eq ->
+                    AppAnimations.SpringEntranceContainer {
+                        PremiumEarthquakeCard(
+                            earthquake = eq,
+                            onClick = { onEarthquakeClick(eq) }
                         )
                     }
-                }
-            },
-            shape = RoundedCornerShape(18.dp)
-        )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // 4. Büyüklük Filtreleri
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            val filterOptions = listOf(
-                0.0 to stringResource(R.string.filter_all),
-                3.0 to "3.0+",
-                4.0 to "4.0+",
-                5.0 to "5.0+"
-            )
-            filterOptions.forEach { (mag, label) ->
-                FilterChip(
-                    selected = minMagnitudeFilter == mag,
-                    onClick = { minMagnitudeFilter = mag },
-                    label = { Text(label, fontSize = 11.sp) },
-                    shape = RoundedCornerShape(12.dp)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        if (uiState.isLoading) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        // 5. DEPREM LİSTESİ
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            contentPadding = PaddingValues(bottom = 90.dp)
-        ) {
-            itemsIndexed(
-                items = filteredList,
-                key = { _, item -> item.id }
-            ) { index, eq ->
-                PremiumEarthquakeCard(
-                    earthquake = eq,
-                    onClick = { onEarthquakeClick(eq) }
-                )
-
-                // 🎯 DİNAMİK REKLAM KOŞULU (5 veya 10 İtemda Bir Native/Banner Reklam)
-                if (shouldShowAdAtIndex(index, filteredList.size)) {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    NativeAdCard()
-                    Spacer(modifier = Modifier.height(4.dp))
+                    if (shouldShowAdAtIndex(index, filteredList.size)) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        NativeAdCard()
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
                 }
             }
         }

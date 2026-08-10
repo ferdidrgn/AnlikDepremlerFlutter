@@ -13,6 +13,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.core.content.edit
+import com.ferdidrgn.anlikdepremler.core.util.ReviewHelper
 
 sealed interface SettingsEvent {
     data class SendEmail(val email: String) : SettingsEvent
@@ -48,13 +50,14 @@ class SettingsViewModel @Inject constructor(
     // 📌 Dil Seçimi (Arayüzü Anında Yeniler)
     fun onLanguageSelected(context: Context, language: AppLanguage) {
         viewModelScope.launch {
-            // 1. Seçimi kaydet
             preferencesManager.saveSelectedLanguage(language.code)
-
-            // 2. Uygulama dilini sistem seviyesinde değiştir (AppCompatActivity olduğu için tık diye çalışacak)
-            val appLocale = androidx.core.os.LocaleListCompat.forLanguageTags(language.code)
-            androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(appLocale)
+            LocaleUtils.setAppLanguage(language.code) // LocaleUtils bağlandı!
         }
+    }
+
+    // Uygulamayı Oylama Tıklandığında
+    fun onRateAppClick(context: Context) {
+        ReviewHelper.launchInAppReview(context) // ReviewHelper bağlandı!
     }
 
     // 📌 Tema Seçimi (Cream Light, System Dynamic, Dark Night)

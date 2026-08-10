@@ -8,21 +8,23 @@ import com.ferdidrgn.anlikdepremler.core.datastore.PreferencesManager
 import com.ferdidrgn.anlikdepremler.core.network.NetworkMonitor
 import com.ferdidrgn.anlikdepremler.data.remote.EarthquakeSource
 import com.ferdidrgn.anlikdepremler.domain.usecase.*
+import com.ferdidrgn.anlikdepremler.domain.util.filterByTimeSpan
 import com.ferdidrgn.anlikdepremler.ui.theme.AppThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 data class HomeUiState(
     val isLoading: Boolean = false,
     val earthquakes: List<Earthquake> = emptyList(),
-    val rawEarthquakes: List<Earthquake> = emptyList(), // 👈 EKLENDİ (Ham Orijinal Liste)
+    val rawEarthquakes: List<Earthquake> = emptyList(),
     val statistics: EarthquakeStatistics = EarthquakeStatistics(0, 0, 0, 0.0, 0.0, "-", emptyMap()),
     val selectedSource: EarthquakeSource = EarthquakeSource.KANDILLI,
     val currentTheme: AppThemeMode = AppThemeMode.CREAM_LIGHT,
-    val selectedTimeFilter: String = "24s", // 👈 EKLENDİ (Varsayılan Zaman Filtresi)
+    val selectedTimeFilter: String = "24s",
     val searchQuery: String = "",
     val locationSearchQuery: String = "",
     val isSearchingLocation: Boolean = false,
@@ -86,7 +88,7 @@ class MainViewModel @Inject constructor(
     private fun setupDebouncedSearch() {
         viewModelScope.launch {
             _locationQueryState
-                .debounce(3000L)
+                .debounce(3000L.milliseconds)
                 .distinctUntilChanged()
                 .collect { query ->
                     _uiState.update {
@@ -113,15 +115,14 @@ class MainViewModel @Inject constructor(
             ).catch { e ->
                 _uiState.update { it.copy(isLoading = false, errorMessage = e.localizedMessage) }
             }.collect { list ->
+                // 🎯 1. Analiz UseCase'i çalışıyor
                 val stats = calculateStatisticsUseCase(list)
+
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        rawEarthquakes = list, // Ham liste hafızada tutuluyor
-                        earthquakes = filterListByTime(
-                            list,
-                            it.selectedTimeFilter
-                        ), // Seçili filtreye göre gösteriliyor
+                        rawEarthquakes = list,
+                        earthquakes = list.filterByTimeSpan(it.selectedTimeFilter),
                         statistics = stats,
                         errorMessage = null
                     )
@@ -130,12 +131,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    // 📌 Saatlik / Günlük Zaman Filtreleme Mantığı
+    // 📌 Zaman Filtreleri Seçildiğinde
     fun onTimeFilterSelected(filter: String) {
         _uiState.update { current ->
             current.copy(
                 selectedTimeFilter = filter,
-                earthquakes = filterListByTime(current.rawEarthquakes, filter)
+                earthquakes = current.rawEarthquakes.filterByTimeSpan(filter)
             )
         }
     }

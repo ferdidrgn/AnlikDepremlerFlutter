@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ferdi.deprem.model.Earthquake
 import com.ferdidrgn.anlikdepremler.R
+import com.ferdidrgn.anlikdepremler.core.util.EmergencySmsHelper
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -42,15 +43,23 @@ fun EarthquakeDetailScreen(
     DisposableEffect(isWhistleBlowing) {
         var toneGenerator: ToneGenerator? = null
         if (isWhistleBlowing) {
-            toneGenerator = ToneGenerator(AudioManager.STREAM_ALARM, 100)
-            toneGenerator.startTone(ToneGenerator.TONE_CDMA_EMERGENCY_RINGBACK, 10000)
+            try {
+                toneGenerator = ToneGenerator(AudioManager.STREAM_ALARM, 100)
+                toneGenerator.startTone(ToneGenerator.TONE_CDMA_EMERGENCY_RINGBACK)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
         onDispose {
-            toneGenerator?.stopTone()
-            toneGenerator?.release()
+            try {
+                toneGenerator?.stopTone()
+                toneGenerator?.release()
+                toneGenerator = null
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
-
     val magnitudeColor = when {
         earthquake.magnitude >= 5.0 -> Color(0xFFD32F2F)
         earthquake.magnitude >= 3.5 -> Color(0xFFE65100)
@@ -227,16 +236,21 @@ fun EarthquakeDetailScreen(
                     }
 
                     Button(
-                        onClick = { isWhistleBlowing = !isWhistleBlowing },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isWhistleBlowing) Color.Black else MaterialTheme.colorScheme.error
-                        )
-                    ) {
-                        Text(
-                            if (isWhistleBlowing) stringResource(R.string.whistle_stop) else stringResource(
-                                R.string.whistle_start
+                        onClick = {
+                            EmergencySmsHelper.sendEmergencySms(
+                                context = context,
+                                phoneNumber = "",
+                                latitude = earthquake.latitude,
+                                longitude = earthquake.longitude,
+                                isSafe = false
                             )
-                        )
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Icon(Icons.Default.Sms, contentDescription = null)
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("Konumlu SMS Gönder")
                     }
                 }
             }

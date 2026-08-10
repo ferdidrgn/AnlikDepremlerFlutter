@@ -44,8 +44,6 @@ class AdManager @Inject constructor() {
             interstitialAd = null
             loadInterstitial(activity) // Bir sonraki için tekrar yükle
             onAdDismissed()
-        } else {
-            onAdDismissed()
-        }
+        } else onAdDismissed()
     }
 }
