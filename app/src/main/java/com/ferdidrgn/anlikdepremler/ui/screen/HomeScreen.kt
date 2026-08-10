@@ -32,8 +32,12 @@ import com.ferdi.deprem.model.EarthquakeStatistics
 import com.ferdi.deprem.model.InfoCardItem
 import com.ferdidrgn.anlikdepremler.R
 import com.ferdidrgn.anlikdepremler.core.ads.BannerAdView
+import com.ferdidrgn.anlikdepremler.core.ui.animation.AppAnimations
+import com.ferdidrgn.anlikdepremler.core.ui.animation.AppAnimations.shimmer
 import com.ferdidrgn.anlikdepremler.data.remote.EarthquakeSource
 import com.ferdidrgn.anlikdepremler.ui.components.NativeAdCard
+import com.ferdidrgn.anlikdepremler.ui.components.NearbyEarthquakeAlertCard
+import com.ferdidrgn.anlikdepremler.ui.components.RequestAppPermissions
 
 @Composable
 fun HomeScreen(
@@ -45,6 +49,21 @@ fun HomeScreen(
     val scrollState = rememberScrollState()
     var rawLocationInput by remember { mutableStateOf("") }
 
+    // 🎯 KONUM İZNİ VE SORGUSU BAŞLATMA
+    RequestAppPermissions(
+        onPermissionsGranted = {
+            viewModel.fetchUserLocationAndSearch()
+        }
+    )
+
+    LaunchedEffect(uiState.userLocation) {
+        uiState.userLocation?.let {
+            if (it.cityName.isNotEmpty() && rawLocationInput.isEmpty()) {
+                rawLocationInput = it.cityName
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -52,6 +71,16 @@ fun HomeScreen(
             .verticalScroll(scrollState)
             .padding(bottom = 90.dp)
     ) {
+        // 🎯 YAKIN DEPREM UYARISI KARTI
+        if (uiState.nearbyAlertEarthquake != null) {
+            NearbyEarthquakeAlertCard(
+                earthquake = uiState.nearbyAlertEarthquake!!,
+                emergencyPhone = uiState.emergencyPhoneNumber,
+                onSafeClicked = { viewModel.dismissNearbyAlert() },
+                onNeedHelpClicked = { viewModel.dismissNearbyAlert() }
+            )
+        }
+
         // 1. Üst Başlık & Canlı Rozet
         HeaderSection()
 
@@ -61,9 +90,11 @@ fun HomeScreen(
             onSourceSelected = { viewModel.onSourceChanged(it) }
         )
 
-        BannerAdView(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp))
+        BannerAdView(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -88,7 +119,7 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 5. İSTATİSTİKLER (EN ÜSTTE)
+        // 5. İSTATİSTİKLER
         StatisticsSection(statistics = uiState.statistics)
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -153,16 +184,35 @@ fun HomeScreen(
             }
         }
 
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            uiState.earthquakes.take(6).forEachIndexed { index, eq ->
-                ExpandableEarthquakeCard(
-                    earthquake = eq,
-                    onClick = { onEarthquakeClick(eq) }
-                )
-                if (index == 2) NativeAdCard()
+        if (uiState.isLoading) {
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                repeat(4) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(70.dp)
+                            .clip(RoundedCornerShape(18.dp))
+                            .shimmer()
+                    )
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                uiState.earthquakes.take(6).forEachIndexed { index, eq ->
+                    AppAnimations.SpringEntranceContainer {
+                        ExpandableEarthquakeCard(
+                            earthquake = eq,
+                            onClick = { onEarthquakeClick(eq) }
+                        )
+                    }
+                    if (index == 2) NativeAdCard()
+                }
             }
         }
 
@@ -357,15 +407,12 @@ fun HeaderSection() {
             )
         }
 
-        val infiniteTransition = rememberInfiniteTransition(label = "pulse")
-        val alpha by infiniteTransition.animateFloat(
-            initialValue = 0.3f, targetValue = 1f,
-            animationSpec = infiniteRepeatable(tween(1000), RepeatMode.Reverse), label = "alpha"
-        )
+        val pulseScale by AppAnimations.rememberPulseScale(targetScale = 1.15f)
 
         Surface(
-            color = MaterialTheme.colorScheme.error.copy(alpha = alpha),
-            shape = RoundedCornerShape(12.dp)
+            color = MaterialTheme.colorScheme.error,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.clip(RoundedCornerShape(12.dp))
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
@@ -1079,21 +1126,11 @@ private fun MagnitudeIndicator(magnitude: Double, color: Color) {
         contentAlignment = Alignment.Center
     ) {
         if (magnitude > 4.0) {
-            val infiniteTransition = rememberInfiniteTransition(label = "pulse")
-            val pulse by infiniteTransition.animateFloat(
-                initialValue = 1f, targetValue = 1.25f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(
-                        1000,
-                        easing = FastOutSlowInEasing
-                    ), repeatMode = RepeatMode.Reverse
-                ),
-                label = "pulse"
-            )
+            val pulseScale by AppAnimations.rememberPulseScale(targetScale = 1.25f)
 
             Box(
                 modifier = Modifier
-                    .size(52.dp * pulse)
+                    .size(52.dp * pulseScale)
                     .background(color = color.copy(alpha = 0.1f), shape = RoundedCornerShape(50))
             )
         }
