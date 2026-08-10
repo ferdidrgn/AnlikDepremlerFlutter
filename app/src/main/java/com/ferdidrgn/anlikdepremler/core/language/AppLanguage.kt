@@ -18,7 +18,7 @@ enum class AppLanguage(val code: String, val displayName: String, val flag: Stri
 
     companion object {
         fun fromCode(code: String): AppLanguage {
-            return values().find { it.code == code } ?: TURKISH
+            return entries.find { it.code == code } ?: TURKISH
         }
     }
 }

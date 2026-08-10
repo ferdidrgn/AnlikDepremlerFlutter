@@ -59,7 +59,8 @@ class SettingsViewModel @Inject constructor(
     fun onLanguageSelected(context: Context, language: AppLanguage) {
         viewModelScope.launch {
             preferencesManager.saveSelectedLanguage(language.code)
-            LocaleUtils.setAppLanguage(language.code)
+            // Context ile birlikte çağırıyoruz ki SharedPreferences ve Activity Recreate çalışsın
+            LocaleUtils.setAppLanguage(context, language.code)
         }
     }
 

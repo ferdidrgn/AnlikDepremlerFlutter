@@ -21,12 +21,12 @@ fun secret(key: String, default: String = ""): String =
 
 android {
     namespace = "com.ferdidrgn.anlikdepremler"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.ferdidrgn.anlikdepremler"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 32
         versionName = "1.32"
 
