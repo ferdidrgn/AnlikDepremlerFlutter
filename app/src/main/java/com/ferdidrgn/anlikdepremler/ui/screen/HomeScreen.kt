@@ -407,8 +407,6 @@ fun HeaderSection() {
             )
         }
 
-        val pulseScale by AppAnimations.rememberPulseScale(targetScale = 1.15f)
-
         Surface(
             color = MaterialTheme.colorScheme.error,
             shape = RoundedCornerShape(12.dp),
