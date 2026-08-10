@@ -196,4 +196,7 @@
     <string name="permissions_title">Необхідні життєво важливі дозволи</string>
     <string name="permissions_desc">Додатку потрібні дозволи на Місцезнаходження та Сповіщення для виявлення поштовхів поблизу вас і надсилання екстрених сповіщень.</string>
     <string name="btn_grant_permissions">Надати дозволи</string>
+    <!-- Картка найбільших історичних землетрусів -->
+    <string name="historical_archive_title">Найбільші історичні землетруси</string>
+    <string name="historical_archive_subtitle">Руйнівний сейсмічний архів від минулого до сьогодення</string>
 </resources>

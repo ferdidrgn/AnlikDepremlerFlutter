@@ -195,4 +195,7 @@
     <string name="permissions_title">Vital Permissions Required</string>
     <string name="permissions_desc">The Earthquakes app needs Location and Notification permissions to detect tremors near you and send emergency notifications.</string>
     <string name="btn_grant_permissions">Grant Permissions</string>
+    <!-- Major Historical Earthquakes Card -->
+    <string name="historical_archive_title">Major Historical Earthquakes</string>
+    <string name="historical_archive_subtitle">Devastating seismic archive from past to present</string>
 </resources>

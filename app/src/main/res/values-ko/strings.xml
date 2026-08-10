@@ -197,4 +197,7 @@
     <string name="permissions_title">필수 권한 필요</string>
     <string name="permissions_desc">앱이 근처의 진동을 감지하고 긴급 알림을 보내려면 위치 및 알림 권한이 필요합니다.</string>
     <string name="btn_grant_permissions">권한 허용</string>
+    <!-- 역사적 대형 지진 카드 -->
+    <string name="historical_archive_title">역사적 대형 지진</string>
+    <string name="historical_archive_subtitle">과거부터 현재까지의 파괴적인 지진 기록 아카이브</string>
 </resources>

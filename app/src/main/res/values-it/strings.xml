@@ -195,4 +195,7 @@
     <string name="permissions_title">Autorizzazioni vitali richieste</string>
     <string name="permissions_desc">L\'app necessita dei permessi di Posizione e Notifica per rilevare scosse vicine a te e inviare notifiche di emergenza.</string>
     <string name="btn_grant_permissions">Concedi autorizzazioni</string>
+    <!-- Scheda Terremoti Storici -->
+    <string name="historical_archive_title">Grandi Terremoti Storici</string>
+    <string name="historical_archive_subtitle">Devastante archivio sismico dal passato al presente</string>
 </resources>

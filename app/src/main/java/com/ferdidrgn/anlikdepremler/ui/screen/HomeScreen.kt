@@ -43,7 +43,8 @@ import com.ferdidrgn.anlikdepremler.ui.components.RequestAppPermissions
 fun HomeScreen(
     viewModel: MainViewModel,
     onEarthquakeClick: (Earthquake) -> Unit = {},
-    onSeeAllClick: () -> Unit = {}
+    onSeeAllClick: () -> Unit = {},
+    onHistoricalArchiveClick: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
@@ -98,14 +99,13 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        if (uiState.isLoading) {
+        if (uiState.isLoading)
             LinearProgressIndicator(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(3.dp),
                 color = MaterialTheme.colorScheme.primary
             )
-        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -150,6 +150,11 @@ fun HomeScreen(
 
         // 9. Bilgi & İpuçları Carousel
         InformationTipsSliderSection()
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // HomeScreen.kt içindeki Column düzeninde istediğin yere yapıştır:
+        HistoricalArchiveBannerCard(onClick = onHistoricalArchiveClick)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -1236,6 +1241,61 @@ fun QuickFilters(
                     containerColor = MaterialTheme.colorScheme.surface,
                     labelColor = MaterialTheme.colorScheme.onSurface
                 )
+            )
+        }
+    }
+}
+
+@Composable
+fun HistoricalArchiveBannerCard(
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(18.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "📜", fontSize = 24.sp)
+            }
+
+            Spacer(modifier = Modifier.width(14.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.historical_archive_title),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = stringResource(R.string.historical_archive_subtitle),
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
             )
         }
     }

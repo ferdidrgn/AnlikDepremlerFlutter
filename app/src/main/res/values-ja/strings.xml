@@ -198,4 +198,7 @@
     <string name="permissions_title">必要な権限について</string>
     <string name="permissions_desc">アプリが近くの揺れを検知して緊急通知を送信するには、位置情報と通知の権限が必要です。</string>
     <string name="btn_grant_permissions">権限を許可</string>
+    <!-- 歴史的大地震カード -->
+    <string name="historical_archive_title">歴史的大地震</string>
+    <string name="historical_archive_subtitle">過去から現在までの破滅的な地震記録アーカイブ</string>
 </resources>

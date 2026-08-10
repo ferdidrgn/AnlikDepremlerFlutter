@@ -196,4 +196,7 @@
     <string name="permissions_title">Маанилүү уруксаттар талап кылынат</string>
     <string name="permissions_desc">Сиздин жаныңыздагы силкинүүлөрдү аныктоо жана шашылыш билдирүүлөрдү жөнөтүү үчүн колдонмого Жайгашкан жер жана Билдирүү уруксаттары керек.</string>
     <string name="btn_grant_permissions">Уруксат берүү</string>
+    <!-- Тарыхый ири жер титирөөлөр карточкасы -->
+    <string name="historical_archive_title">Тарыхтагы ири жер титирөөлөр</string>
+    <string name="historical_archive_subtitle">Мурункудан азыркыга чейинки сейсмикалык архив</string>
 </resources>

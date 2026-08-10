@@ -195,4 +195,7 @@
     <string name="permissions_title">Muhim ruxsatlar talab qilinadi</string>
     <string name="permissions_desc">Ilova yaqiningizdagi silkinishlarni aniqlashi va favqulodda xabarnomalarni yuborishi uchun Joylashuv va Bildirishnoma ruxsatlari kerak.</string>
     <string name="btn_grant_permissions">Ruxsat berish</string>
+    <!-- Tarixiy yirik zilzilalar kartochkasi -->
+    <string name="historical_archive_title">Tarixdagi yirik zilzilalar</string>
+    <string name="historical_archive_subtitle">O‘tmishdan hozirgacha bo‘lgan seysmik arxiv</string>
 </resources>

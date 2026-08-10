@@ -195,4 +195,8 @@
     <string name="permissions_title">Απαιτούνται ζωτικές άδειες</string>
     <string name="permissions_desc">Η εφαρμογή χρειάζεται άδειες Τοποθεσίας και Ειδοποιήσεων για να εντοπίζει δονήσεις κοντά σας και να στέλνει ειδοποιήσεις έκτακτης ανάγκης.</string>
     <string name="btn_grant_permissions">Παραχώρηση αδειών</string>
+    <!-- Historische Erdbeben Karte -->
+    <!-- Κάρτα Ιστορικών Σεισμών -->
+    <string name="historical_archive_title">Μεγάλοι Ιστορικοί Σεισμοί</string>
+    <string name="historical_archive_subtitle">Καταστροφικό σεισμικό αρχείο από το παρελθόν έως σήμερα</string>
 </resources>

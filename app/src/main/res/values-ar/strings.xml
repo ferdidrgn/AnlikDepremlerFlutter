@@ -195,4 +195,7 @@
     <string name="permissions_title">الأذونات الحيوية مطلوبة</string>
     <string name="permissions_desc">يحتاج التطبيق إلى أذونات الموقع والإشعارات لاكتشاف الهزات القريبة منك وإرسال إشعارات الطوارئ.</string>
     <string name="btn_grant_permissions">منح الأذونات</string>
+    <!-- بطاقة الزلازل التاريخية الكبرى -->
+    <string name="historical_archive_title">أكبر الزلازل التاريخية</string>
+    <string name="historical_archive_subtitle">أرشيف زلزالي مدمر من الماضي إلى الحاضر</string>
 </resources>

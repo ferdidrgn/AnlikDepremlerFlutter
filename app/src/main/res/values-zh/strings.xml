@@ -197,4 +197,7 @@
     <string name="permissions_title">需要 critical 权限</string>
     <string name="permissions_desc">应用需要位置和通知权限，以便检测您附近的地震并发送紧急通知。</string>
     <string name="btn_grant_permissions">授予权限</string>
+    <!-- 历史重大地震卡片 -->
+    <string name="historical_archive_title">历史重大地震</string>
+    <string name="historical_archive_subtitle">从古至今的破坏性地震档案</string>
 </resources>

@@ -80,16 +80,19 @@ fun AppNavigation(
                     viewModel = mainViewModel,
                     onEarthquakeClick = { selectedEq ->
                         val activity = context.findActivity()
-                        if (activity != null)
+                        if (activity != null) {
                             adManager.showInterstitial(activity) {
                                 navController.navigate("detail/${selectedEq.id}")
                             }
-                        else
+                        } else {
                             navController.navigate("detail/${selectedEq.id}")
-
+                        }
                     },
                     onSeeAllClick = {
                         navController.navigate(Screen.Earthquakes.route)
+                    },
+                    onHistoricalArchiveClick = {
+                        navController.navigate("historical_archive")
                     }
                 )
             }
