@@ -24,6 +24,7 @@ import com.ferdidrgn.anlikdepremler.ui.components.CustomBottomNavigationBar
 import com.ferdidrgn.anlikdepremler.ui.components.OfflineBanner
 import com.ferdidrgn.anlikdepremler.ui.screen.EarthquakeDetailScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.EarthquakeListScreen
+import com.ferdidrgn.anlikdepremler.ui.screen.HistoricalArchiveScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.HomeScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.LegalDocumentScreen
 import com.ferdidrgn.anlikdepremler.ui.screen.MainViewModel
@@ -150,6 +151,12 @@ fun AppNavigation(
                 val docType = backStackEntry.arguments?.getString("docType") ?: "privacy_policy"
                 LegalDocumentScreen(
                     documentType = docType,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+            composable("historical_archive") {
+                HistoricalArchiveScreen(
                     onBackClick = { navController.popBackStack() }
                 )
             }

@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var adManager: AdManager
 
+    // 🎯 DİL DOKUNUŞU: UYGULAMA AÇILIRKEN KAYITLI DİLİ YÜKLEYEN KRİTİK METOT
     override fun attachBaseContext(newBase: Context) {
         val prefs = newBase.getSharedPreferences("app_prefs", MODE_PRIVATE)
         val savedLanguage = prefs.getString("selected_language", "tr") ?: "tr"
@@ -52,7 +53,6 @@ class MainActivity : AppCompatActivity() {
 
             var isSplashActive by remember { mutableStateOf(true) }
 
-            // 🎯 STATUS BAR & NAV BAR RENK YÖNETİMİ
             ConfigureSystemBars(themeMode = uiState.currentTheme)
 
             DepremTheme(themeMode = uiState.currentTheme) {

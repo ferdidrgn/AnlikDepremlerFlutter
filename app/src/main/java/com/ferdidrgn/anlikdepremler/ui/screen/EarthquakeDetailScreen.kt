@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -96,13 +97,14 @@ fun EarthquakeDetailScreen(
                     strokeColor = magnitudeColor,
                     strokeWidth = 3f
                 )
+
+                val markerState = rememberMarkerState(
+                    key = earthquake.id,
+                    position = LatLng(earthquake.latitude, earthquake.longitude)
+                )
+
                 Marker(
-                    state = MarkerState(
-                        position = LatLng(
-                            earthquake.latitude,
-                            earthquake.longitude
-                        )
-                    ),
+                    state = markerState,
                     title = earthquake.location
                 )
             }
@@ -114,7 +116,10 @@ fun EarthquakeDetailScreen(
                     .padding(16.dp)
                     .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f), CircleShape)
             ) {
-                Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.back)
+                )
             }
         }
 
@@ -308,15 +313,26 @@ fun SeismicImpactCard(
     onFeltClicked: () -> Unit
 ) {
     var hasUserFelt by remember { mutableStateOf(false) }
-    var currentFeltCount by remember { mutableStateOf(feltCount) }
+    var currentFeltCount by remember { mutableIntStateOf(feltCount) }
+
+    // 🎯 REMEMBER SARMALI İLE STATE DERLEYİCİ HATASI ÇÖZÜLDÜ
+    val mmiText = remember(magnitude, depth) {
+        when {
+            magnitude >= 6.0 && depth <= 15.0 -> "MMI IX (X)"
+            magnitude >= 6.0 -> "MMI VIII"
+            magnitude >= 4.5 && depth <= 10.0 -> "MMI VI (VII)"
+            magnitude >= 4.5 -> "MMI V"
+            magnitude >= 3.0 && depth <= 15.0 -> "MMI IV"
+            magnitude >= 3.0 -> "MMI III"
+            else -> "MMI I (II)"
+        }
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
-                alpha = 0.4f
-            )
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
         )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -325,17 +341,19 @@ fun SeismicImpactCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Sarsıntı Topluluk Bildirimi",
+                        text = stringResource(R.string.daily_summary_subtitle),
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        text = "$currentFeltCount Kişi Hissettiğini Bildirdi",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.ExtraBold
+                        text = "$currentFeltCount ${stringResource(R.string.unit_earthquake)}",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -352,7 +370,11 @@ fun SeismicImpactCard(
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text(if (hasUserFelt) "✓ Hissettim" else "Ben de Hissettim!")
+                    Text(
+                        text = if (hasUserFelt) "✓" else stringResource(R.string.show_more),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
 
@@ -360,26 +382,34 @@ fun SeismicImpactCard(
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
             Spacer(modifier = Modifier.height(12.dp))
 
-            // MMI Şiddet Derecesi Tahmini
-            val mmiText = when {
-                magnitude >= 6.0 -> "Şiddetli (Yıkıcı Olabilir)"
-                magnitude >= 4.5 -> "Orta (Binalar Sallandı, Eşyalar Düştü)"
-                magnitude >= 3.0 -> "Hafif (İç Mekanda Hissedildi)"
-                else -> "Zayıf (Yalnızca Hassas Hissedildi)"
-            }
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "${stringResource(R.string.label_depth)}: ",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = "$depth km",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (depth <= 10.0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+                    )
+                }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "Tahmini MMI Şiddeti: ",
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = mmiText,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "${stringResource(R.string.label_perceived_intensity)}: ",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = mmiText,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         }
     }

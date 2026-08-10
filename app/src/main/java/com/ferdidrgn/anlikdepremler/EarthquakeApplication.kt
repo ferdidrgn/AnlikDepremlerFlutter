@@ -18,7 +18,7 @@ class EarthquakeApplication : Application() {
         super.onCreate()
         try {
             FirebaseApp.initializeApp(this)
-            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
+            FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = true
             FcmTokenManager.syncFcmToken(this)
 
             adManager.initialize(this)
